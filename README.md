@@ -46,4 +46,4 @@ class RootEnvironment: ComposableEnvironment {
 ````swift
 Root().with(\.mainQueue, .failing).child.mainQueue == .failing
 ````
-We only have to declare `ChildEnvironment` as a property of `RootEnvironment`. Like with SwiftUI's `View`, if one modify a dependency with `with(keypath, value)`, only the environment's instance and its derived environments will receive the new dependency. Its eventual parent and siblings will be unaffected.
+We only have to declare `ChildEnvironment` as a property of `RootEnvironment`. Like with SwiftUI's `View`, if one modifies a dependency with `with(keypath, value)`, only the environment's instance and its derived environments will receive the new dependency. Its eventual parent and siblings will be unaffected.
