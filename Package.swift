@@ -3,7 +3,7 @@
 import PackageDescription
 
 let package = Package(
-  name: "swift-composableEnvironment",
+  name: "swift-composable-environment",
   products: [
     .library(
       name: "ComposableEnvironment",
