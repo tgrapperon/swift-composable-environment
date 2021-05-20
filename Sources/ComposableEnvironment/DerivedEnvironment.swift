@@ -8,7 +8,12 @@ public final class DerivedEnvironment<Value> where Value: ComposableEnvironment 
   ) -> Value {
     get {
       let environment = instance[keyPath: storageKeyPath].environment
+      instance.knownChildren.insert(storageKeyPath)
+      if environment.hasReceivedDependenciesFromParent {
+        return environment
+      }
       environment.dependencies.mergeFromUpstream(instance.dependencies)
+      environment.hasReceivedDependenciesFromParent = true
       return environment
     }
     set {
