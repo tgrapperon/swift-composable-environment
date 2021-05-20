@@ -48,6 +48,17 @@ Root().with(\.mainQueue, .failing).child.mainQueue == .failing
 ````
 We only have to declare `ChildEnvironment` as a property of `RootEnvironment`, with the `@DerivedEnvironment` property wrapper. Like with SwiftUI's `View`, if one modifies a dependency with `with(keypath, value)`, only the environment's instance and its derived environments will receive the new dependency. Its eventual parent and siblings will be unaffected.
 
+## Correspondance with SwiftUI's Environment
+In order to ease its learning curve, the library bases its API on SwiftUI's Environment. We have the following functional correspondances:
+| SwiftUI | ComposableEnvironment| Usage |
+|---|---|---|
+|`EnvironmentKey`|`DependencyKey`| Identify a shared value |
+|`EnvironmentValues`|`ComposableDependencies`| Expose a shared value |
+|`@Environment`|`@Dependency`| Retrieve a shared value |
+|`View`|`ComposableEnvironment`| A node |
+|`View.body`| `@DerivedEnvironment`'s | A list of children of the node |
+|`View.environment(keyPath:value:)`|`ComposableEnvironment.with(keyPath:value:)`| Set a shared value for a node and its children |
+
 ## Advantages over manual management
 - You don't have to instantiate your child environments, nor to manage their initializers.
 - You don't have to host a dependency in some environment for the sole purpose of passing it to child environments. You can define a dependency in the `Root` environment and retrieve it in any descendant (if none of its ancester has overidden the root's value in the meantime). You don't have to declare this dependency in the `Environment`'s which are not using it explicitly.
@@ -57,7 +68,7 @@ We only have to declare `ChildEnvironment` as a property of `RootEnvironment`, w
 - You write much less code, and you get more autocompletion.
 - You can fall back to manual management with `ComposableEnvironment` if necessary, and store properties that are not `@Dependency`'s.
 
-## Inconvenients over manual management
+## Inconvenients compared to manual management
 - Your environments need to be subclasses of `ComposableEnvironment`.
 - Your environments must be connected through `@DerivedEnvironment`. If one of the members of the environment tree is not a `ComposableEnvironment`, nor derived from another via `@DerivedEnvironment`, automatic syncing of dependencies will stop to work downstream, as the next `ComposableEnvironment` will act as a root for its subtree (I guess some safeguards are possible).
 - You need to declare your dependencies explicitly in the `ComposedDependencies` pseudo-namespace. It may require to plan ahead if you're working with an highly modularized application. I guess it should be possible to define equivalence relations between dependencies at some point. Otherwise, I would recommend to define transversal dependencies like `mainQueue` or `Date`, in a separate module that can be shared by each feature.
