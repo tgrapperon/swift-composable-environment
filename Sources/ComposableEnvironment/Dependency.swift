@@ -9,7 +9,6 @@ public struct Dependency<Value> {
   ) -> Value {
     get {
       let wrapper = instance[keyPath: storageKeyPath]
-      if let defaultValue = wrapper.defaultValue { return defaultValue }
       let keyPath = wrapper.keyPath
       let value = instance.dependencies[keyPath: keyPath]
       return value
@@ -19,8 +18,6 @@ public struct Dependency<Value> {
     }
   }
 
-  @usableFromInline
-  var defaultValue: Value?
   @usableFromInline
   var keyPath: KeyPath<ComposableDependencies, Value>
 
