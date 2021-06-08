@@ -1,6 +1,5 @@
 @propertyWrapper
 public final class DerivedEnvironment<Value> where Value: ComposableEnvironment {
-  @inlinable
   public static subscript<EnclosingSelf: ComposableEnvironment>(
     _enclosingInstance instance: EnclosingSelf,
     wrapped wrappedKeyPath: ReferenceWritableKeyPath<EnclosingSelf, Value>,
@@ -21,7 +20,6 @@ public final class DerivedEnvironment<Value> where Value: ComposableEnvironment 
     }
   }
 
-  @usableFromInline
   var environment: Value
 
   public init(wrappedValue: Value) {

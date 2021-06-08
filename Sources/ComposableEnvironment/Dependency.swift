@@ -1,7 +1,6 @@
 /// Use this property wrapper to declare depencies in a ComposableEnvironment subclass.
 @propertyWrapper
 public struct Dependency<Value> {
-  @inlinable
   public static subscript<EnclosingSelf: ComposableEnvironment>(
     _enclosingInstance instance: EnclosingSelf,
     wrapped wrappedKeyPath: ReferenceWritableKeyPath<EnclosingSelf, Value>,
@@ -18,7 +17,6 @@ public struct Dependency<Value> {
     }
   }
 
-  @usableFromInline
   var keyPath: KeyPath<ComposableDependencies, Value>
 
   public init(_ keyPath: KeyPath<ComposableDependencies, Value>) {
