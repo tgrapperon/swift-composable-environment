@@ -102,4 +102,45 @@ final class ComposableEnvironmentTests: XCTestCase {
     XCTAssertEqual(parent.c1.c2.c3.c4.c5.int, 4)
     XCTAssertEqual(parent.c1.c2.c3.int, 4)
   }
+  
+  func testModifyingDependenciesOncePrimed() {
+    class Parent: ComposableEnvironment {
+      @Dependency(\.int) var int
+      @DerivedEnvironment<C1> var c1
+    }
+    final class C1: ComposableEnvironment {
+      @DerivedEnvironment<C2> var c2
+    }
+    final class C2: ComposableEnvironment {
+      @DerivedEnvironment<C3> var c3
+    }
+    final class C3: ComposableEnvironment {
+      @DerivedEnvironment<C4> var c4
+      @Dependency(\.int) var int
+    }
+    final class C4: ComposableEnvironment {
+      @DerivedEnvironment<C5> var c5
+    }
+    final class C5: ComposableEnvironment {
+      @Dependency(\.int) var int
+    }
+    let parent = Parent().with(\.int, 4)
+    XCTAssertEqual(parent.c1.c2.c3.int, 4)
+    XCTAssertEqual(parent.c1.c2.c3.c4.c5.int, 4)
+    // At this stage, the chain is completely primed.
+    
+    //Update parent with 7
+    parent[\.int] = 7
+    XCTAssertEqual(parent.c1.c2.c3.c4.c5.int, 7)
+    
+    //Update c3 with 8
+    parent.c1.c2.c3[\.int] = 8
+    XCTAssertEqual(parent.c1.c2.c3.c4.c5.int, 8)
+    
+    //Update parent again with 9
+    parent[\.int] = 9
+    // c5 should keep c3's value
+    XCTAssertEqual(parent.c1.c2.c3.int, 8)
+    XCTAssertEqual(parent.c1.c2.c3.c4.c5.int, 8)
+  }
 }

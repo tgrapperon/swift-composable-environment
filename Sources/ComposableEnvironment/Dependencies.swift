@@ -26,16 +26,46 @@ public protocol DependencyKey {
 /// This dependency can then be referenced by its keypath `\.uuidGenerator` when invoking the ``Dependency``
 /// property wrapper in some ``ComposableEnvironment`` subclass.
 public struct ComposableDependencies {
-  var values = [AnyHashableType: Any]()
-
-  subscript<T>(_ key: T.Type) -> T.Value where T: DependencyKey {
-    get { values[AnyHashableType(key)] as? T.Value ?? key.defaultValue }
-    set { values[AnyHashableType(key)] = newValue }
+  /// This wrapper enum allows to distinguish dependencies that where defined explicitely for a given environment from
+  /// dependencies that were inherited from their parent environment.
+  enum DependencyValue {
+    case defined(Any)
+    case inherited(Any)
+    
+    var value: Any {
+      switch self {
+      case let .defined(value): return value
+      case let .inherited(value): return value
+      }
+    }
+    
+    func inherit() -> DependencyValue {
+      switch self {
+      case let .defined(value): return .inherited(value)
+      case .inherited: return self
+      }
+    }
+    
+    var isDefined: Bool {
+      switch self {
+      case .defined: return true
+      case .inherited: return false
+      }
+    }
   }
+  
+  var values = [AnyHashableType: DependencyValue]()
 
+  public subscript<T>(_ key: T.Type) -> T.Value where T: DependencyKey {
+    get { values[AnyHashableType(key)]?.value as? T.Value ?? key.defaultValue }
+    set { values[AnyHashableType(key)] = .defined(newValue) }
+  }
+  
   mutating func mergeFromUpstream(_ upstreamDependencies: ComposableDependencies) {
-    // We should preserve existing overrides
-    values = values.merging(upstreamDependencies.values,
-                            uniquingKeysWith: { existing, _ in existing })
+    // We should preserve dependencies that were defined explicitely.
+    for (key, value) in upstreamDependencies.values {
+      guard values[key]?.isDefined != true else { continue }
+      values[key] = value.inherit()
+    }
   }
 }

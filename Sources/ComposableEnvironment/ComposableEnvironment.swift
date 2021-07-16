@@ -29,10 +29,13 @@ open class ComposableEnvironment {
   /// will propagate to each child``DerivedEnvironment`` as well as their own children ``DerivedEnvironment``.
   public required init() {}
 
-  var dependencies: ComposableDependencies = .init()
-
-  var hasReceivedDependenciesFromParent: Bool = false
-  
+  var dependencies: ComposableDependencies = .init() {
+    didSet {
+      // This will make any child refetch its upstream dependencies when accessed.
+      knownChildren.removeAll()
+    }
+  }
+      
   var knownChildren: Set<AnyKeyPath> = []
   
   /// Use this function to set the values of a given dependency for this environment and all its descendants.
@@ -56,8 +59,13 @@ open class ComposableEnvironment {
   @discardableResult
   public func with<V>(_ keyPath: WritableKeyPath<ComposableDependencies, V>, _ value: V) -> Self {
     dependencies[keyPath: keyPath] = value
-    assert(knownChildren.isEmpty, "Modifying dependencies once children DerivedEnvironments have be accessed is not supported.")
     return self
+  }
+  
+  /// A read-write subcript to directly access a dependency from its `KeyPath` in ``ComposableDependencies``.
+  public subscript<Value>(keyPath: WritableKeyPath<ComposableDependencies, Value>) -> Value {
+    get { dependencies[keyPath: keyPath] }
+    set { dependencies[keyPath: keyPath] = newValue }
   }
 }
 
