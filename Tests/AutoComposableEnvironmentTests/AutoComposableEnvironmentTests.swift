@@ -1,6 +1,7 @@
 @testable import AutoComposableEnvironment
 import ComposableArchitecture
 import XCTest
+import ComposableEnvironment
 
 struct IntKey: DependencyKey {
   static var defaultValue: Int { 1 }
@@ -19,27 +20,27 @@ final class ComposableEnvironmentTests: XCTestCase {
       case action
     }
 
-    class RootEnvironment: AutoComposableEnvironment {}
-    class DerivedEnvironment1: AutoComposableEnvironment {}
-    class DerivedEnvironment2: AutoComposableEnvironment {}
+    class First: AutoComposableEnvironment {}
+    class Second: AutoComposableEnvironment {}
+    class Third: AutoComposableEnvironment {}
 
-    let reducer2 = Reducer<Int, Action, DerivedEnvironment2> {
+    let thirdReducer = Reducer<Int, Action, Third> {
       state, _, environment in
       state = environment.int
       return .none
     }
 
-    let reducer1 = Reducer<Int, Action, DerivedEnvironment1>.combine(
-      reducer2.pullback(state: \.self, action: /.self)
+    let secondReducer = Reducer<Int, Action, Second>.combine(
+      thirdReducer.pullback(state: \.self, action: /.self)
     )
 
-    let rootReducer = Reducer<Int, Action, RootEnvironment>.combine(
-      reducer1.pullback(state: \.self, action: /.self)
+    let firstReducer = Reducer<Int, Action, First>.combine(
+      secondReducer.pullback(state: \.self, action: /.self)
     )
 
     let store = TestStore(
       initialState: 0,
-      reducer: rootReducer,
+      reducer: firstReducer,
       environment: .init()
         .with(\.int, 2)
     )
@@ -55,27 +56,27 @@ final class ComposableEnvironmentTests: XCTestCase {
       case action
     }
 
-    class RootEnvironment: AutoComposableEnvironment {}
-    class DerivedEnvironment1: AutoComposableEnvironment {}
-    class DerivedEnvironment2: AutoComposableEnvironment {}
+    class First: AutoComposableEnvironment {}
+    class Second: AutoComposableEnvironment {}
+    class Third: AutoComposableEnvironment {}
 
-    let reducer2 = Reducer<State, Action, DerivedEnvironment2> {
+    let thirdReducer = Reducer<State, Action, Third> {
       state, _, environment in
       state = .int(environment.int)
       return .none
     }
 
-    let reducer1 = Reducer<State, Action, DerivedEnvironment1>.combine(
-      reducer2.pullback(state: /.self, action: /.self)
+    let secondReducer = Reducer<State, Action, Second>.combine(
+      thirdReducer.pullback(state: /.self, action: /.self)
     )
 
-    let rootReducer = Reducer<State, Action, RootEnvironment>.combine(
-      reducer1.pullback(state: /.self, action: /.self)
+    let firstReducer = Reducer<State, Action, First>.combine(
+      secondReducer.pullback(state: /.self, action: /.self)
     )
 
     let store = TestStore(
       initialState: .int(0),
-      reducer: rootReducer,
+      reducer: firstReducer,
       environment: .init()
         .with(\.int, 2)
     )
@@ -88,16 +89,16 @@ final class ComposableEnvironmentTests: XCTestCase {
       case action
     }
 
-    class RootEnvironment: AutoComposableEnvironment {}
-    class DerivedEnvironment1: AutoComposableEnvironment {}
-    class DerivedEnvironment2: AutoComposableEnvironment {}
+    class First: AutoComposableEnvironment {}
+    class Second: AutoComposableEnvironment {}
+    class Third: AutoComposableEnvironment {}
 
     struct Value: Identifiable, Equatable {
       var id: String
       var int: Int
     }
 
-    let reducer2 = Reducer<IdentifiedArrayOf<Value>, Action, DerivedEnvironment2> {
+    let thirdReducer = Reducer<IdentifiedArrayOf<Value>, Action, Third> {
       state, _, environment in
       for index in state.indices {
         state.update(.init(id: state[index].id, int: environment.int), at: index)
@@ -105,12 +106,12 @@ final class ComposableEnvironmentTests: XCTestCase {
       return .none
     }
 
-    let reducer1 = Reducer<IdentifiedArrayOf<Value>, Action, DerivedEnvironment1>.combine(
-      reducer2.pullback(state: \.self, action: /.self)
+    let secondReducer = Reducer<IdentifiedArrayOf<Value>, Action, Second>.combine(
+      thirdReducer.pullback(state: \.self, action: /.self)
     )
 
-    let rootReducer = Reducer<IdentifiedArrayOf<Value>, Action, RootEnvironment>.combine(
-      reducer1.pullback(state: \.self, action: /.self)
+    let firstReducer = Reducer<IdentifiedArrayOf<Value>, Action, First>.combine(
+      secondReducer.pullback(state: \.self, action: /.self)
     )
 
     let store = TestStore(
@@ -118,7 +119,7 @@ final class ComposableEnvironmentTests: XCTestCase {
         .init(id: "A", int: 0),
         .init(id: "B", int: 3),
       ]),
-      reducer: rootReducer,
+      reducer: firstReducer,
       environment: .init()
         .with(\.int, 2)
     )
@@ -135,11 +136,11 @@ final class ComposableEnvironmentTests: XCTestCase {
     enum Action {
       case action
     }
-    class RootEnvironment: AutoComposableEnvironment {}
-    class DerivedEnvironment1: AutoComposableEnvironment {}
-    class DerivedEnvironment2: AutoComposableEnvironment {}
+    class First: AutoComposableEnvironment {}
+    class Second: AutoComposableEnvironment {}
+    class Third: AutoComposableEnvironment {}
 
-    let reducer2 = Reducer<[String: Int], Action, DerivedEnvironment2> {
+    let thirdReducer = Reducer<[String: Int], Action, Third> {
       state, _, environment in
       for key in state.keys {
         state[key] = environment.int
@@ -147,12 +148,12 @@ final class ComposableEnvironmentTests: XCTestCase {
       return .none
     }
 
-    let reducer1 = Reducer<[String: Int], Action, DerivedEnvironment1>.combine(
-      reducer2.pullback(state: \.self, action: /.self)
+    let secondReducer = Reducer<[String: Int], Action, Second>.combine(
+      thirdReducer.pullback(state: \.self, action: /.self)
     )
 
-    let rootReducer = Reducer<[String: Int], Action, RootEnvironment>.combine(
-      reducer1.pullback(state: \.self, action: /.self)
+    let firstReducer = Reducer<[String: Int], Action, First>.combine(
+      secondReducer.pullback(state: \.self, action: /.self)
     )
 
     let store = TestStore(
@@ -160,7 +161,7 @@ final class ComposableEnvironmentTests: XCTestCase {
         "A": 0,
         "B": 3,
       ],
-      reducer: rootReducer,
+      reducer: firstReducer,
       environment: .init()
         .with(\.int, 2)
     )
@@ -171,5 +172,77 @@ final class ComposableEnvironmentTests: XCTestCase {
         "B": 2,
       ]
     }
+  }
+  
+  func testComposableAutoComposableComposableBridging() {
+    class Third: ComposableEnvironment {
+      @Dependency(\.int) var integer
+    }
+    class Second: AutoComposableEnvironment {
+      @DerivedEnvironment<Third> var third
+    }
+    class First: ComposableEnvironment {}
+    
+    enum Action {
+      case action
+    }
+
+    let thirdReducer = Reducer<Int, Action, Third> {
+      state, _, environment in
+      state = environment.integer
+      return .none
+    }
+
+    let secondReducer = Reducer<Int, Action, Second>.combine(
+      thirdReducer.pullback(state: \.self, action: /.self, environment: \.third)
+    )
+
+    let firstReducer = Reducer<Int, Action, First>.combine(
+      secondReducer.pullback(state: \.self, action: /.self)
+    )
+
+    let store = TestStore(
+      initialState: 0,
+      reducer: firstReducer,
+      environment: .init()
+        .with(\.int, 2)
+    )
+
+    store.send(.action) { $0 = 2 }
+  }
+  
+  func testAutoComposableComposableAutoComposableBridging() {
+    class Third: AutoComposableEnvironment { }
+    class Second: ComposableEnvironment { }
+    class First: AutoComposableEnvironment {
+      @DerivedEnvironment<Second> var second
+    }
+    
+    enum Action {
+      case action
+    }
+
+    let thirdReducer = Reducer<Int, Action, Third> {
+      state, _, environment in
+      state = environment.int
+      return .none
+    }
+
+    let secondReducer = Reducer<Int, Action, Second>.combine(
+      thirdReducer.pullback(state: \.self, action: /.self)
+    )
+
+    let firstReducer = Reducer<Int, Action, First>.combine(
+      secondReducer.pullback(state: \.self, action: /.self, environment: \.second)
+    )
+
+    let store = TestStore(
+      initialState: 0,
+      reducer: firstReducer,
+      environment: .init()
+        .with(\.int, 2)
+    )
+    
+    store.send(.action) { $0 = 2 }
   }
 }
