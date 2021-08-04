@@ -54,11 +54,11 @@ public struct ComposableDependencies {
     }
   }
   
-  var values = [AnyHashableType: DependencyValue]()
+  var values = [ObjectIdentifier: DependencyValue]()
 
   public subscript<T>(_ key: T.Type) -> T.Value where T: DependencyKey {
-    get { values[AnyHashableType(key)]?.value as? T.Value ?? key.defaultValue }
-    set { values[AnyHashableType(key)] = .defined(newValue) }
+    get { values[ObjectIdentifier(key)]?.value as? T.Value ?? key.defaultValue }
+    set { values[ObjectIdentifier(key)] = .defined(newValue) }
   }
   
   mutating func mergeFromUpstream(_ upstreamDependencies: ComposableDependencies) {
