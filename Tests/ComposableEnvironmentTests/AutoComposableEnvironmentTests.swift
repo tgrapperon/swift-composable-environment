@@ -1,20 +1,20 @@
-@testable import AutoComposableEnvironment
+@testable import ComposableEnvironment
 import ComposableArchitecture
 import XCTest
 import ComposableEnvironment
 
-struct IntKey: DependencyKey {
+fileprivate struct IntKey: DependencyKey {
   static var defaultValue: Int { 1 }
 }
 
-extension ComposableDependencies {
+fileprivate extension ComposableDependencies {
   var int: Int {
     get { self[IntKey.self] }
     set { self[IntKey.self] = newValue }
   }
 }
 
-final class ComposableEnvironmentTests: XCTestCase {
+final class AutoComposableEnvironmentTests: XCTestCase {
   func testPullbackWithKeyPath() {
     enum Action {
       case action

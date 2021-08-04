@@ -14,26 +14,16 @@ let package = Package(
     .library(
       name: "ComposableEnvironment",
       targets: ["ComposableEnvironment"]),
-    .library(
-      name: "AutoComposableEnvironment",
-      targets: ["AutoComposableEnvironment"]),
   ],
   dependencies: [
     .package(url: "https://github.com/pointfreeco/swift-composable-architecture", from: "0.22.0")
   ],
   targets: [
     .target(
-      name: "AutoComposableEnvironment",
+      name: "ComposableEnvironment",
       dependencies: [
         .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
-        "ComposableEnvironment",
       ]),
-    .testTarget(
-      name: "AutoComposableEnvironmentTests",
-      dependencies: ["AutoComposableEnvironment"]),
-    .target(
-      name: "ComposableEnvironment",
-      dependencies: []),
     .testTarget(
       name: "ComposableEnvironmentTests",
       dependencies: ["ComposableEnvironment"]),

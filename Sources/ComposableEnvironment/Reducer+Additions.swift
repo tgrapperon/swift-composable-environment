@@ -1,5 +1,4 @@
 import ComposableArchitecture
-import ComposableEnvironment
 
 public extension Reducer where Environment: AutoComposableEnvironment {
   /// Transforms a reducer that works on local state, action, and environment into one that works on

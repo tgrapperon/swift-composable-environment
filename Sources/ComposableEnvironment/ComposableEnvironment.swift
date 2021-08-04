@@ -70,7 +70,7 @@ open class ComposableEnvironment {
   }
   
   @discardableResult
-  public func updatingFromParentIfNeeded(_ parent: ComposableEnvironment) -> Self {
+  func updatingFromParentIfNeeded(_ parent: ComposableEnvironment) -> Self {
     if !parent.upToDateDerivedEnvironments.contains(self) {
       // The following line updates the `environemnt`'s dependencies, invalidating its children
       // dependencies when it mutates its `dependency` property.
