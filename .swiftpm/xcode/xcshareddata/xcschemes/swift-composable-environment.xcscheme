@@ -14,37 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AutoComposableEnvironment"
-               BuildableName = "AutoComposableEnvironment"
-               BlueprintName = "AutoComposableEnvironment"
-               ReferencedContainer = "container:">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
                BlueprintIdentifier = "ComposableEnvironment"
                BuildableName = "ComposableEnvironment"
                BlueprintName = "ComposableEnvironment"
-               ReferencedContainer = "container:">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "NO"
-            buildForArchiving = "NO"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AutoComposableEnvironmentTests"
-               BuildableName = "AutoComposableEnvironmentTests"
-               BlueprintName = "AutoComposableEnvironmentTests"
                ReferencedContainer = "container:">
             </BuildableReference>
          </BuildActionEntry>
@@ -70,16 +42,6 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AutoComposableEnvironmentTests"
-               BuildableName = "AutoComposableEnvironmentTests"
-               BlueprintName = "AutoComposableEnvironmentTests"
-               ReferencedContainer = "container:">
-            </BuildableReference>
-         </TestableReference>
          <TestableReference
             skipped = "NO">
             <BuildableReference
@@ -112,9 +74,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "AutoComposableEnvironment"
-            BuildableName = "AutoComposableEnvironment"
-            BlueprintName = "AutoComposableEnvironment"
+            BlueprintIdentifier = "ComposableEnvironment"
+            BuildableName = "ComposableEnvironment"
+            BlueprintName = "ComposableEnvironment"
             ReferencedContainer = "container:">
          </BuildableReference>
       </MacroExpansion>
