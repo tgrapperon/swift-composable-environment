@@ -22,6 +22,7 @@
 /// - Warning: All child environment must be themself subclasses of ``ComposableEnvironment``. If the environments chain is
 /// broken, an environment will retrieve the value of a dependency from its farthest direct ascendant, or use the default value if none
 /// was specificied. It will not "jump" over ascendants that are not ``ComposableEnvironment`` to retrieve the value of a dependency.
+@dynamicMemberLookup
 open class ComposableEnvironment {
   /// Instantiate a ``ComposableEnvironment`` instance with all dependencies sets to their defaults.
   ///
@@ -67,5 +68,11 @@ open class ComposableEnvironment {
     get { dependencies[keyPath: keyPath] }
     set { dependencies[keyPath: keyPath] = newValue }
   }
+  
+  /// A read-only subcript to directly access a dependency from ``ComposableDependencies``.
+  /// - Remark: This direct access can't be used to set a dependency, as it will try to go through a the setter part of a ``Dependency``
+  /// property wrapper, which is not allowed yet. You can use ``with(_:_:)`` or ``subscript(_:)`` instead.
+  public subscript<Value>(dynamicMember keyPath: KeyPath<ComposableDependencies, Value>) -> Value {
+    get { dependencies[keyPath: keyPath] }
+  }
 }
-
