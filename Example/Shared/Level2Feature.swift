@@ -48,11 +48,11 @@ let level2Reducer = Reducer<Level2State, Level2Action, Level2Environment> {
     return .none
   case .requestRandomNumber:
     // Note that we don't have defined any `@Dependency(\.mainQueue)` in environment, but we can use
-    // the subscript to access it from its global KeyPath instead.
+    // its global property name instead.
     return environment
       .randomNumber()
       .map(Level2Action.randomNumber)
-      .receive(on: environment[\.mainQueue])
+      .receive(on: environment.mainQueue) 
       .eraseToEffect()
   }
 }

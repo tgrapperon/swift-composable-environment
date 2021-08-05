@@ -17,12 +17,16 @@ class Level1Environment: ComposableEnvironment {
   @DerivedEnvironment<Level2Environment> var second
   
   // In this case, we could have used a shared DerivedEnvironment property instead:
-  // @DerivedEnvironment<Level2Environment> var level2
+  //   @DerivedEnvironment<Level2Environment> var level2
   
   // This environment doesn't have exposed dependencies, but this doesn't prevent derived
   // environments to inherit dependencies that were set higher in the parents' chain, nor
   // to access them using their global KeyPath.
 }
+
+// Alternatively, if we plan to use environment-less pullback variants, we can only declare an
+// empty environment:
+//   class Level1Environment: ComposableEnvironment { }
 
 let level1Reducer = Reducer<Level1State, Level1Action, Level1Environment>.combine(
   level2Reducer.pullback(state: \.first,
@@ -32,6 +36,14 @@ let level1Reducer = Reducer<Level1State, Level1Action, Level1Environment>.combin
   level2Reducer.pullback(state: \.second,
                          action: /Level1Action.second,
                          environment: \.second) // (or \.level2 if we had used only one property)
+  
+  // Alternatively, we can use the environment-less pullback variants:
+  //   level2Reducer.pullback(state: \.first,
+  //                          action: /Level1Action.first)
+  //
+  //   level2Reducer.pullback(state: \.second,
+  //                          action: /Level1Action.second)
+  
 )
 
 #if os(macOS)
