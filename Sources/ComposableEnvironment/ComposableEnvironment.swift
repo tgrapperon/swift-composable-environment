@@ -1,3 +1,4 @@
+import Foundation
 /// The base class of your environments.
 ///
 /// Subclass this class to define your feature's environment. You can expose ``ComposableDependencies`` values using the
@@ -33,11 +34,22 @@ open class ComposableEnvironment {
   var dependencies: ComposableDependencies = .init() {
     didSet {
       // This will make any child refetch its upstream dependencies when accessed.
-      knownChildren.removeAll()
+      upToDateDerivedEnvironments.removeAllObjects()
     }
   }
-      
-  var knownChildren: Set<AnyKeyPath> = []
+  
+  var upToDateDerivedEnvironments: NSHashTable<ComposableEnvironment> = .weakObjects()
+  
+  @discardableResult
+  func updatingFromParentIfNeeded(_ parent: ComposableEnvironment) -> Self {
+    if !parent.upToDateDerivedEnvironments.contains(self) {
+      // The following line updates the `environment`'s dependencies, invalidating its children
+      // dependencies when it mutates its own `dependencies` property as a side effect.
+      dependencies.mergeFromUpstream(parent.dependencies)
+      parent.upToDateDerivedEnvironments.add(self)
+    }
+    return self
+  }
   
   /// Use this function to set the values of a given dependency for this environment and all its descendants.
   ///

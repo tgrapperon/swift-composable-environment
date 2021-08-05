@@ -18,14 +18,9 @@ public final class DerivedEnvironment<Value> where Value: ComposableEnvironment 
     storage storageKeyPath: ReferenceWritableKeyPath<EnclosingSelf, DerivedEnvironment>
   ) -> Value {
     get {
-      let environment = instance[keyPath: storageKeyPath].environment
-      if !instance.knownChildren.contains(storageKeyPath) {
-        instance.knownChildren.insert(storageKeyPath)
-        // The following line updates the `environemnt`'s dependencies, invalidating its children
-        // dependencies when it mutates its `dependency` property.
-        environment.dependencies.mergeFromUpstream(instance.dependencies)
-      }
-      return environment
+      instance[keyPath: storageKeyPath]
+        .environment
+        .updatingFromParentIfNeeded(instance)
     }
     set {
       fatalError("@DerivedEnvironments are read-only in their parent")
