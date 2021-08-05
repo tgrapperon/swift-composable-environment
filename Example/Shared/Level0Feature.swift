@@ -3,6 +3,8 @@ import ComposableArchitecture
 import ComposableEnvironment
 import SwiftUI
 
+// "Level0" Feature, which embeds a `Level1` feature
+
 struct Level0State: Equatable {
   var level1: Level1State
   var isReady: Bool = false
@@ -40,14 +42,14 @@ let level0Reducer = Reducer<Level0State, Level0Action, Level0Environment>.combin
         .delay(for: 1, scheduler: environment.background) // Simulate something lengthy…
         .receive(on: environment.main)
         .eraseToEffect()
-      
+
       // Alternatively, we can directly tap into the environment's dependepencies using
-      // their global KeyPath, meaning that we can even bypass declarations like
-      // `@Dependency(\.mainQueue) var main` in the environment.
+      // their global property name, meaning that we can even bypass declarations like
+      // `@Dependency(\.mainQueue) var main` in the environment to write:
       //
       //   return Effect(value: .isReady)
-      //     .delay(for: 1, scheduler: environment[\.backgroundQueue])
-      //     .receive(on: environment[\.mainQueue])
+      //     .delay(for: 1, scheduler: environment.backgroundQueue)
+      //     .receive(on: environment.mainQueue)
       //     .eraseToEffect()
     }
   }
@@ -98,9 +100,8 @@ struct Level0View_Preview: PreviewProvider {
           second: .init(randomNumber: nil)
         )),
         reducer: level0Reducer,
+        // An environment default dependencies:
         environment: .init())
     )
   }
 }
-
-

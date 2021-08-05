@@ -1,8 +1,9 @@
 /// Use this property wrapper to declare depencies in a ``ComposableEnvironment`` subclass.
 ///
-/// You reference the dependency by its `KeyPath` originating from  ``ComposableDependencies``, and you declare its
-/// name in the local environment. The dependency should not be instantiated, as it is either inherited from a ``ComposableEnvironment`` parent,
-/// or installed with  ``ComposableEnvironment/with(_:_:)``.
+/// You reference the dependency by its `KeyPath` originating from  ``ComposableDependencies``, and
+/// you declare its name in the local environment. The dependency should not be instantiated, as it
+/// is either inherited from a ``ComposableEnvironment`` parent, or installed with
+/// ``ComposableEnvironment/with(_:_:)``.
 ///
 /// For example, if the dependency is declared as:
 /// ```swift
@@ -19,8 +20,8 @@
 ///   @Dependency(\.uuidGenerator) var uuid
 /// }
 /// ```
-/// This exposes a `var uuid: () -> UUID` readonly property in the `LocalEnvironment`. This property can then be used as
-/// any vanilla dependency.
+/// This exposes a `var uuid: () -> UUID` read-only property in the `LocalEnvironment`. This
+/// property can then be used as any vanilla dependency.
 @propertyWrapper
 public struct Dependency<Value> {
   /// Alternative to ``wrappedValue`` with access to the enclosing instance.

@@ -19,7 +19,8 @@ public extension Reducer where Environment: ComposableEnvironment {
   func pullback<GlobalState, GlobalAction, GlobalEnvironment>(
     state toLocalState: WritableKeyPath<GlobalState, State>,
     action toLocalAction: CasePath<GlobalAction, Action>
-  ) -> Reducer<GlobalState, GlobalAction, GlobalEnvironment> where GlobalEnvironment: ComposableEnvironment {
+  ) -> Reducer<GlobalState, GlobalAction, GlobalEnvironment>
+  where GlobalEnvironment: ComposableEnvironment {
     let local = Environment()
     return pullback(
       state: toLocalState,
@@ -51,7 +52,8 @@ public extension Reducer where Environment: ComposableEnvironment {
     breakpointOnNil: Bool = true,
     _ file: StaticString = #file,
     _ line: UInt = #line
-  ) -> Reducer<GlobalState, GlobalAction, GlobalEnvironment> where GlobalEnvironment: ComposableEnvironment {
+  ) -> Reducer<GlobalState, GlobalAction, GlobalEnvironment>
+  where GlobalEnvironment: ComposableEnvironment {
     let local = Environment()
     return pullback(
       state: toLocalState,
@@ -84,7 +86,8 @@ public extension Reducer where Environment: ComposableEnvironment {
     breakpointOnNil: Bool = true,
     _ file: StaticString = #file,
     _ line: UInt = #line
-  ) -> Reducer<GlobalState, GlobalAction, GlobalEnvironment> where GlobalEnvironment: ComposableEnvironment {
+  ) -> Reducer<GlobalState, GlobalAction, GlobalEnvironment>
+  where GlobalEnvironment: ComposableEnvironment {
     let local = Environment()
     return forEach(
       state: toLocalState,
@@ -116,7 +119,8 @@ public extension Reducer where Environment: ComposableEnvironment {
     breakpointOnNil: Bool = true,
     _ file: StaticString = #file,
     _ line: UInt = #line
-  ) -> Reducer<GlobalState, GlobalAction, GlobalEnvironment> where GlobalEnvironment: ComposableEnvironment {
+  ) -> Reducer<GlobalState, GlobalAction, GlobalEnvironment>
+  where GlobalEnvironment: ComposableEnvironment {
     let local = Environment()
     return forEach(
       state: toLocalState,

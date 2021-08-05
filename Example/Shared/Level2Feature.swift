@@ -13,12 +13,15 @@ private struct RNGKey: DependencyKey {
   }
 }
 
+// Install it in `ComposableDependencies`:
 public extension ComposableDependencies {
   var rng: RandomNumberGenerator {
     get { self[RNGKey.self] }
     set { self[RNGKey.self] = newValue }
   }
 }
+
+// "Level2" Feature
 
 struct Level2State: Equatable {
   var randomNumber: Int?
@@ -47,8 +50,8 @@ let level2Reducer = Reducer<Level2State, Level2Action, Level2Environment> {
     state.randomNumber = number
     return .none
   case .requestRandomNumber:
-    // Note that we don't have defined any `@Dependency(\.mainQueue)` in environment, but we can use
-    // its global property name instead.
+    // Note that we don't have defined any `@Dependency(\.mainQueue)` in environment.
+    // We use its global property name instead:
     return environment
       .randomNumber()
       .map(Level2Action.randomNumber)
