@@ -40,7 +40,7 @@ final class ReducerAdditionsTests: XCTestCase {
     let store = TestStore(
       initialState: 0,
       reducer: firstReducer,
-      environment: .init()
+      environment: First() // Swift ≥ 5.4 can use .init()
         .with(\.int, 2)
     )
 
@@ -76,7 +76,7 @@ final class ReducerAdditionsTests: XCTestCase {
     let store = TestStore(
       initialState: .int(0),
       reducer: firstReducer,
-      environment: .init()
+      environment: First() // Swift ≥ 5.4 can use .init()
         .with(\.int, 2)
     )
 
@@ -119,7 +119,7 @@ final class ReducerAdditionsTests: XCTestCase {
         .init(id: "B", int: 3),
       ]),
       reducer: firstReducer,
-      environment: .init()
+      environment: First() // Swift ≥ 5.4 can use .init()
         .with(\.int, 2)
     )
 
@@ -161,7 +161,7 @@ final class ReducerAdditionsTests: XCTestCase {
         "B": 3,
       ],
       reducer: firstReducer,
-      environment: .init()
+      environment: First() // Swift ≥ 5.4 can use .init()
         .with(\.int, 2)
     )
 
@@ -203,7 +203,7 @@ final class ReducerAdditionsTests: XCTestCase {
     let store = TestStore(
       initialState: 0,
       reducer: firstReducer,
-      environment: .init()
+      environment: First() // Swift 5.4+ can use .init()
         .with(\.int, 2)
     )
 
@@ -238,7 +238,7 @@ final class ReducerAdditionsTests: XCTestCase {
     let store = TestStore(
       initialState: 0,
       reducer: firstReducer,
-      environment: .init()
+      environment: First() // Swift ≥ 5.4 can use .init()
         .with(\.int, 2)
     )
     

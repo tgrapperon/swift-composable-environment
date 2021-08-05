@@ -85,7 +85,7 @@ struct Level0View_Preview: PreviewProvider {
           )
         ),
         reducer: level0Reducer,
-        environment: .init()
+        environment: Level0Environment() // Swift ≥ 5.4 can use .init()
           .with(\.mainQueue, .immediate)
           .with(\.backgroundQueue, .immediate)
           // We can set the value of `rng` even if Level0Environment doesn't have a `rng` property:

@@ -52,7 +52,7 @@ let level2Reducer = Reducer<Level2State, Level2Action, Level2Environment> {
     return environment
       .randomNumber()
       .map(Level2Action.randomNumber)
-      .receive(on: environment.mainQueue) 
+      .receive(on: environment.mainQueue)
       .eraseToEffect()
   }
 }
@@ -90,7 +90,7 @@ struct Level2View_Preview: PreviewProvider {
         ),
         reducer: level2Reducer,
         environment:
-        .init()
+        Level2Environment() // Swift ≥ 5.4 can use .init()
           .with(\.mainQueue, .immediate)
           .with(\.rng) { 12 })
     )
@@ -101,7 +101,7 @@ struct Level2View_Preview: PreviewProvider {
         ),
         reducer: level2Reducer,
         environment:
-        .init()
+        Level2Environment() // Swift ≥ 5.4 can use .init()
           .with(\.mainQueue, .immediate)
           .with(\.rng) { 54 })
     )
