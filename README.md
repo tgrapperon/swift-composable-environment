@@ -51,6 +51,23 @@ Root().with(\.mainQueue, .failing).child.mainQueue == .failing
 ````
 We only have to declare `ChildEnvironment` as a property of `RootEnvironment`, with the `@DerivedEnvironment` property wrapper. Like with SwiftUI's `View`, if one modifies a dependency with `with(keypath, value)`, only the environment's instance and its derived environments will receive the new dependency. Its eventual parent and siblings will be unaffected.
 
+### AutoComposableEnvironment
+Since [`v0.4`](https://github.com/tgrapperon/swift-composable-environment/releases/tag/0.4.0), you can optionally forgo `@Dependency` and `@DerivedEnvironment` declarations:
+
+- You can directly access dependencies using their property name defined in `ComposableDepencies` directly in your `ComposableEnvironment` subclass, as if you defined `@Dependency(\.someDependency) var someDependency`.
+
+- You can use environment-less pullbacks. They will vend your derived feature's reducer a derived environment of the expected type. This is equivalent to defining  `@DerivedEnvironment<ChildEnvironment> var child` in your parent's environment, and using `[…], environment:\.child)` when pulling-back.
+
+You still need `@Dependency` if you want to customize the exposed name of your dependency in your environment, like
+```swift
+@Dependency(\.someDependency) var anotherNameForTheDependency
+```
+You still need `@DerivedEnvironment` if you want to override the dependencies inside the environment's chain:
+```swift
+@DerivedEnvironment var child = ChildEnvironment().with(\.someDependency, someValue)
+```
+The example app shows how this feature can be used and mixed with the property-wrapper approach.
+
 ## Correspondance with SwiftUI's Environment
 In order to ease its learning curve, the library bases its API on SwiftUI's Environment. We have the following functional correspondances:
 | SwiftUI | ComposableEnvironment| Usage |
