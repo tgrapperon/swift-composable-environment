@@ -1,5 +1,6 @@
 # ComposableEnvironment
 [![](https://github.com/tgrapperon/swift-composable-environment/actions/workflows/swift.yml/badge.svg)](https://github.com/tgrapperon/swift-composable-environment/actions/workflows/swift.yml)
+[![Documentation](https://github.com/tgrapperon/swift-composable-environment/actions/workflows/documentation.yml/badge.svg)](https://github.com/tgrapperon/swift-composable-environment/wiki)
 [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Ftgrapperon%2Fswift-composable-environment%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/tgrapperon/swift-composable-environment)
 [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Ftgrapperon%2Fswift-composable-environment%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/tgrapperon/swift-composable-environment)
 
@@ -78,6 +79,9 @@ In order to ease its learning curve, the library bases its API on SwiftUI's Envi
 |`View`|`ComposableEnvironment`| A node |
 |`View.body`| `@DerivedEnvironment`'s | A list of children of the node |
 |`View.environment(keyPath:value:)`|`ComposableEnvironment.with(keyPath:value:)`| Set a shared value for a node and its children |
+
+## Documentation
+The latest documentation for ComposableEnvironment's APIs is available [here](https://github.com/tgrapperon/swift-composable-environment/wiki).
 
 ## Advantages over manual management
 - You don't have to instantiate your child environments, nor to manage their initializers.
