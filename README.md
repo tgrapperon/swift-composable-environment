@@ -96,3 +96,15 @@ The latest documentation for ComposableEnvironment's APIs is available [here](ht
 - Your environments need to be subclasses of `ComposableEnvironment`.
 - Your environments must be connected through `@DerivedEnvironment`. If one of the members of the environment tree is not a `ComposableEnvironment`, nor derived from another via `@DerivedEnvironment`, automatic syncing of dependencies will stop to work downstream, as the next `ComposableEnvironment` will act as a root for its subtree (I guess some safeguards are possible).
 - You need to declare your dependencies explicitly in the `ComposedDependencies` pseudo-namespace. It may require to plan ahead if you're working with an highly modularized application. I guess it should be possible to define equivalence relations between dependencies at some point. Otherwise, I would recommend to define transversal dependencies like `mainQueue` or `Date`, in a separate module that can be shared by each feature.
+
+## Installation
+
+Add 
+```swift
+.package(url: "https://github.com/tgrapperon/swift-composable-environment", from: "0.0.4")
+```
+to your Package dependencies in `Package.swift`, and then
+```swift
+.product(name: "ComposableEnvironment", package: "swift-composable-environment")
+```
+to your target's dependencies.
