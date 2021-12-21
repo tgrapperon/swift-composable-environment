@@ -46,7 +46,7 @@ open class ComposableEnvironment {
   var upToDateDerivedEnvironments: NSHashTable<ComposableEnvironment> = .weakObjects()
   
   @discardableResult
-  func updatingFromParentIfNeeded(_ parent: ComposableEnvironment) -> Self {
+  public func updatingFromParentIfNeeded(_ parent: ComposableEnvironment) -> Self {
     if !parent.upToDateDerivedEnvironments.contains(self) {
       // The following line updates the `environment`'s dependencies, invalidating its children
       // dependencies when it mutates its own `dependencies` property as a side effect.
