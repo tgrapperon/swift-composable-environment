@@ -55,15 +55,15 @@ extension GlobalDependenciesAccessing {
   }
   
   /// A read-write subcript to directly access a dependency from its `KeyPath` in
-  /// ``ComposableDependencies``.
+  /// `Dependencies`.
   public subscript<Value>(keyPath: WritableKeyPath<Dependencies, Value>) -> Value {
     get { Dependencies.global[keyPath: keyPath] }
     set { Dependencies.global[keyPath: keyPath] = newValue }
   }
   
-  /// A read-only subcript to directly access a global dependency from ``Dependencies``.
+  /// A read-only subcript to directly access a global dependency from `Dependencies`.
   /// - Remark: This direct access can't be used to set a dependency, as it will try to go through
-  /// the setter part of a ``Dependency`` property wrapper, which is not allowed yet. You can use
+  /// the setter part of a `Dependency` property wrapper, which is not allowed yet. You can use
   ///  ``with(_:_:)`` or ``subscript(_:)`` instead.
   public subscript<Value>(dynamicMember keyPath: KeyPath<Dependencies, Value>) -> Value {
     get { Dependencies.global[keyPath: keyPath] }

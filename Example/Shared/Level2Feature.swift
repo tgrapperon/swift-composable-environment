@@ -13,7 +13,7 @@ private struct RNGKey: DependencyKey {
   }
 }
 
-// Install it in `ComposableDependencies`:
+// Install it in `Dependencies`:
 public extension Dependencies {
   var rng: RandomNumberGenerator {
     get { self[RNGKey.self] }

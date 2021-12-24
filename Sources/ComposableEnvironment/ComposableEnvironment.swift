@@ -3,12 +3,12 @@ import Foundation
 /// The base class of your environments.
 ///
 /// Subclass this class to define your feature's environment. You can expose
-/// ``ComposableDependencies`` values using the ``Dependency`` property wrapper and declare child
+/// `Dependencies` values using the ``Dependency`` property wrapper and declare child
 /// environment using the ``DerivedEnvironment`` property wrapper.
 ///
 /// For example, if you define:
 /// ```swift
-/// extension ComposableDependencies {
+/// extension Dependencies {
 ///   var uuidGenerator: () -> UUID {…}
 ///   var mainQueue: AnySchedulerOf {…}
 /// },
@@ -60,13 +60,13 @@ open class ComposableEnvironment {
   /// Use this function to set the values of a given dependency for this environment and all its
   /// descendants.
   ///
-  /// Calls to this function are chainable, and you can specify any ``ComposableDependencies``
+  /// Calls to this function are chainable, and you can specify any `Dependencies`'s
   /// `KeyPath`, even if the current environment instance does not expose the corresponding
   /// dependency itself.
   ///
   /// For example, if you define:
   /// ```swift
-  /// extension ComposableDependencies {
+  /// extension Dependencies {
   ///   var uuidGenerator: () -> UUID {…}
   ///   var mainQueue: AnySchedulerOf {…}
   /// },
@@ -84,13 +84,13 @@ open class ComposableEnvironment {
   }
   
   /// A read-write subcript to directly access a dependency from its `KeyPath` in
-  /// ``ComposableDependencies``.
+  /// `Dependencies`.
   public subscript<Value>(keyPath: WritableKeyPath<Dependencies, Value>) -> Value {
     get { dependencies[keyPath: keyPath] }
     set { dependencies[keyPath: keyPath] = newValue }
   }
   
-  /// A read-only subcript to directly access a dependency from ``ComposableDependencies``.
+  /// A read-only subcript to directly access a dependency from `Dependencies`.
   /// - Remark: This direct access can't be used to set a dependency, as it will try to go through
   /// the setter part of a ``Dependency`` property wrapper, which is not allowed yet. You can use
   ///  ``with(_:_:)`` or ``subscript(_:)`` instead.

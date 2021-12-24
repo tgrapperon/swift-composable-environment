@@ -12,7 +12,7 @@
 /// }
 /// ```
 /// This dependency can then be referenced by its keypath `\.uuidGenerator` when invoking the
-/// ``Dependency`` property wrapper.
+/// `Dependency` property wrapper.
 public struct Dependencies {
   /// This wrapper enum allows to distinguish dependencies that where defined explicitely for a
   /// given environment from dependencies that were inherited from their parent environment.

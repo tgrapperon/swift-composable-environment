@@ -1,13 +1,13 @@
 /// Use this property wrapper to declare depencies in a ``ComposableEnvironment`` subclass.
 ///
-/// You reference the dependency by its `KeyPath` originating from  ``ComposableDependencies``, and
+/// You reference the dependency by its `KeyPath` originating from  `Dependencies`, and
 /// you declare its name in the local environment. The dependency should not be instantiated, as it
 /// is either inherited from a ``ComposableEnvironment`` parent, or installed with
 /// ``ComposableEnvironment/with(_:_:)``.
 ///
 /// For example, if the dependency is declared as:
 /// ```swift
-/// extension ComposableDependencies {
+/// extension Dependencies {
 ///   var uuidGenerator: () -> UUID {
 ///     get { self[UUIDGeneratorKey.self] }
 ///     set { self[UUIDGeneratorKey.self] = newValue }
