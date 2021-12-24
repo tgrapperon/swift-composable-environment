@@ -41,10 +41,10 @@ public struct Dependency<Value> {
     }
   }
 
-  var keyPath: KeyPath<ComposableDependencies, Value>
+  var keyPath: KeyPath<Dependencies, Value>
 
   /// See ``Dependency`` discussion
-  public init(_ keyPath: KeyPath<ComposableDependencies, Value>) {
+  public init(_ keyPath: KeyPath<Dependencies, Value>) {
     self.keyPath = keyPath
   }
   

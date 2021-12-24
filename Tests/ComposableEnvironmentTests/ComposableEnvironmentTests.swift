@@ -5,7 +5,7 @@ fileprivate struct IntKey: DependencyKey {
   static var defaultValue: Int { 1 }
 }
 
-fileprivate extension ComposableDependencies {
+fileprivate extension Dependencies {
   var int: Int {
     get { self[IntKey.self] }
     set { self[IntKey.self] = newValue }

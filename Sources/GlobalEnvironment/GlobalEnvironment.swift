@@ -1,3 +1,9 @@
+@_exported import Dependencies
+
+extension Dependencies {
+  static var global: Dependencies = ._new()
+}
+
 /// A marker protocol that provides convenient access to global dependencies.
 ///
 /// This protocol has not requirements. By conforming to it you expose some convenient methods to

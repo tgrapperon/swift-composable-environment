@@ -1,5 +1,5 @@
 import Foundation
-import Dependencies
+@_exported import Dependencies
 /// The base class of your environments.
 ///
 /// Subclass this class to define your feature's environment. You can expose
@@ -37,7 +37,7 @@ open class ComposableEnvironment {
   /// well as their own children ``DerivedEnvironment``.
   public required init() {}
 
-  var dependencies: ComposableDependencies = ._new() {
+  var dependencies: Dependencies = ._new() {
     didSet {
       // This will make any child refetch its upstream dependencies when accessed.
       upToDateDerivedEnvironments.removeAllObjects()
@@ -78,14 +78,14 @@ open class ComposableEnvironment {
   ///   .with(\.mainQueue, .main)
   /// ```
   @discardableResult
-  public func with<V>(_ keyPath: WritableKeyPath<ComposableDependencies, V>, _ value: V) -> Self {
+  public func with<V>(_ keyPath: WritableKeyPath<Dependencies, V>, _ value: V) -> Self {
     dependencies[keyPath: keyPath] = value
     return self
   }
   
   /// A read-write subcript to directly access a dependency from its `KeyPath` in
   /// ``ComposableDependencies``.
-  public subscript<Value>(keyPath: WritableKeyPath<ComposableDependencies, Value>) -> Value {
+  public subscript<Value>(keyPath: WritableKeyPath<Dependencies, Value>) -> Value {
     get { dependencies[keyPath: keyPath] }
     set { dependencies[keyPath: keyPath] = newValue }
   }
@@ -94,7 +94,7 @@ open class ComposableEnvironment {
   /// - Remark: This direct access can't be used to set a dependency, as it will try to go through
   /// the setter part of a ``Dependency`` property wrapper, which is not allowed yet. You can use
   ///  ``with(_:_:)`` or ``subscript(_:)`` instead.
-  public subscript<Value>(dynamicMember keyPath: KeyPath<ComposableDependencies, Value>) -> Value {
+  public subscript<Value>(dynamicMember keyPath: KeyPath<Dependencies, Value>) -> Value {
     get { dependencies[keyPath: keyPath] }
   }
 }

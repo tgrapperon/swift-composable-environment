@@ -8,7 +8,7 @@ private struct MainQueueKey: DependencyKey {
   }
 }
 
-public extension ComposableDependencies {
+public extension Dependencies {
   var mainQueue: AnySchedulerOf<DispatchQueue> {
     get { self[MainQueueKey.self] }
     set { self[MainQueueKey.self] = newValue }
@@ -22,7 +22,7 @@ private struct BackgroundQueueKey: DependencyKey {
   }
 }
 
-public extension ComposableDependencies {
+public extension Dependencies {
   var backgroundQueue: AnySchedulerOf<DispatchQueue> {
     get { self[BackgroundQueueKey.self] }
     set { self[BackgroundQueueKey.self] = newValue }
