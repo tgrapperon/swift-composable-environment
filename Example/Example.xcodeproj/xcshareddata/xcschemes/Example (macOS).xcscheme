@@ -14,10 +14,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "GlobalEnvironmentCompat"
-               BuildableName = "GlobalEnvironmentCompat"
-               BlueprintName = "GlobalEnvironmentCompat"
-               ReferencedContainer = "container:">
+               BlueprintIdentifier = "E972F1F826A2B74A00504D39"
+               BuildableName = "Example.app"
+               BlueprintName = "Example (macOS)"
+               ReferencedContainer = "container:Example.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -40,6 +40,16 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
+      <BuildableProductRunnable
+         runnableDebuggingMode = "0">
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "E972F1F826A2B74A00504D39"
+            BuildableName = "Example.app"
+            BlueprintName = "Example (macOS)"
+            ReferencedContainer = "container:Example.xcodeproj">
+         </BuildableReference>
+      </BuildableProductRunnable>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
@@ -47,15 +57,16 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <MacroExpansion>
+      <BuildableProductRunnable
+         runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "GlobalEnvironmentCompat"
-            BuildableName = "GlobalEnvironmentCompat"
-            BlueprintName = "GlobalEnvironmentCompat"
-            ReferencedContainer = "container:">
+            BlueprintIdentifier = "E972F1F826A2B74A00504D39"
+            BuildableName = "Example.app"
+            BlueprintName = "Example (macOS)"
+            ReferencedContainer = "container:Example.xcodeproj">
          </BuildableReference>
-      </MacroExpansion>
+      </BuildableProductRunnable>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">
