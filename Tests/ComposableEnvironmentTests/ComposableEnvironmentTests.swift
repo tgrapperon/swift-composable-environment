@@ -21,6 +21,12 @@ final class ComposableEnvironmentTests: XCTestCase {
     XCTAssertEqual(env.int, 1)
   }
   
+  func testDependencyImplicitAccess() {
+    class Env: ComposableEnvironment {}
+    let env = Env()
+    XCTAssertEqual(env[\.int], 1)
+  }
+  
   func testDependencyPropagation() {
     class Parent: ComposableEnvironment {
       @Dependency(\.int) var int

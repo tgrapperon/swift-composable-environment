@@ -1,4 +1,5 @@
 import Foundation
+import Dependencies
 /// The base class of your environments.
 ///
 /// Subclass this class to define your feature's environment. You can expose
@@ -36,7 +37,7 @@ open class ComposableEnvironment {
   /// well as their own children ``DerivedEnvironment``.
   public required init() {}
 
-  var dependencies: ComposableDependencies = .init() {
+  var dependencies: ComposableDependencies = ._new() {
     didSet {
       // This will make any child refetch its upstream dependencies when accessed.
       upToDateDerivedEnvironments.removeAllObjects()
@@ -50,7 +51,7 @@ open class ComposableEnvironment {
     if !parent.upToDateDerivedEnvironments.contains(self) {
       // The following line updates the `environment`'s dependencies, invalidating its children
       // dependencies when it mutates its own `dependencies` property as a side effect.
-      dependencies.mergeFromUpstream(parent.dependencies)
+      dependencies._mergeFromUpstream(parent.dependencies)
       parent.upToDateDerivedEnvironments.add(self)
     }
     return self
