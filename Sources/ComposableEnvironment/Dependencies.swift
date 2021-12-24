@@ -69,3 +69,13 @@ public struct ComposableDependencies {
     }
   }
 }
+
+public final class _ComposableDependencies {
+  weak var context: _ComposableDependencies?
+  var values: [ObjectIdentifier: Any] = [:]
+  
+  public subscript<T>(_ key: T.Type) -> T.Value where T: DependencyKey {
+    get { values[ObjectIdentifier(key)] as? T.Value ?? context?[key] ?? key.defaultValue }
+    set { values[ObjectIdentifier(key)] = newValue }
+  }
+}

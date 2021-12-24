@@ -25,7 +25,7 @@ public extension Reducer where Environment: ComposableEnvironment {
     return pullback(
       state: toLocalState,
       action: toLocalAction,
-      environment: local.updatingFromParentIfNeeded
+      environment: local.connected
     )
   }
 
@@ -58,7 +58,7 @@ public extension Reducer where Environment: ComposableEnvironment {
     return pullback(
       state: toLocalState,
       action: toLocalAction,
-      environment: local.updatingFromParentIfNeeded,
+      environment: local.connected,
       breakpointOnNil: breakpointOnNil
     )
   }
@@ -92,7 +92,7 @@ public extension Reducer where Environment: ComposableEnvironment {
     return forEach(
       state: toLocalState,
       action: toLocalAction,
-      environment: local.updatingFromParentIfNeeded,
+      environment: local.connected,
       breakpointOnNil: breakpointOnNil
     )
   }
@@ -125,7 +125,7 @@ public extension Reducer where Environment: ComposableEnvironment {
     return forEach(
       state: toLocalState,
       action: toLocalAction,
-      environment: local.updatingFromParentIfNeeded,
+      environment: local.connected,
       breakpointOnNil: breakpointOnNil
     )
   }

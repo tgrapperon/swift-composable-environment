@@ -35,7 +35,15 @@ open class ComposableEnvironment {
   /// individual dependencies. These values ill propagate to each child``DerivedEnvironment`` as
   /// well as their own children ``DerivedEnvironment``.
   public required init() {}
-
+  
+  var _dependencies = _ComposableDependencies()
+  
+  @discardableResult
+  func connected(to env: ComposableEnvironment) -> Self {
+    self._dependencies.context = env._dependencies
+    return self
+  }
+  
   var dependencies: ComposableDependencies = .init() {
     didSet {
       // This will make any child refetch its upstream dependencies when accessed.
@@ -77,23 +85,23 @@ open class ComposableEnvironment {
   ///   .with(\.mainQueue, .main)
   /// ```
   @discardableResult
-  public func with<V>(_ keyPath: WritableKeyPath<ComposableDependencies, V>, _ value: V) -> Self {
-    dependencies[keyPath: keyPath] = value
+  public func with<V>(_ keyPath: WritableKeyPath<_ComposableDependencies, V>, _ value: V) -> Self {
+    _dependencies[keyPath: keyPath] = value
     return self
   }
   
   /// A read-write subcript to directly access a dependency from its `KeyPath` in
   /// ``ComposableDependencies``.
-  public subscript<Value>(keyPath: WritableKeyPath<ComposableDependencies, Value>) -> Value {
-    get { dependencies[keyPath: keyPath] }
-    set { dependencies[keyPath: keyPath] = newValue }
+  public subscript<Value>(keyPath: WritableKeyPath<_ComposableDependencies, Value>) -> Value {
+    get { _dependencies[keyPath: keyPath] }
+    set { _dependencies[keyPath: keyPath] = newValue }
   }
   
   /// A read-only subcript to directly access a dependency from ``ComposableDependencies``.
   /// - Remark: This direct access can't be used to set a dependency, as it will try to go through
   /// the setter part of a ``Dependency`` property wrapper, which is not allowed yet. You can use
   ///  ``with(_:_:)`` or ``subscript(_:)`` instead.
-  public subscript<Value>(dynamicMember keyPath: KeyPath<ComposableDependencies, Value>) -> Value {
-    get { dependencies[keyPath: keyPath] }
+  public subscript<Value>(dynamicMember keyPath: KeyPath<_ComposableDependencies, Value>) -> Value {
+    get { _dependencies[keyPath: keyPath] }
   }
 }

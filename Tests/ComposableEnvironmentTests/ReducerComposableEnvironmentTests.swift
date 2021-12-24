@@ -6,7 +6,7 @@ fileprivate struct IntKey: DependencyKey {
   static var defaultValue: Int { 1 }
 }
 
-fileprivate extension ComposableDependencies {
+fileprivate extension _ComposableDependencies {
   var int: Int {
     get { self[IntKey.self] }
     set { self[IntKey.self] = newValue }
@@ -175,10 +175,10 @@ final class ReducerAdditionsTests: XCTestCase {
   
   func testComposableAutoComposableComposableBridging() {
     class Third: ComposableEnvironment {
-      @Dependency(\.int) var integer
+      @_Dependency(\.int) var integer
     }
     class Second: ComposableEnvironment {
-      @DerivedEnvironment<Third> var third
+      @_DerivedEnvironment<Third> var third
     }
     class First: ComposableEnvironment {}
     
@@ -214,7 +214,7 @@ final class ReducerAdditionsTests: XCTestCase {
     class Third: ComposableEnvironment { }
     class Second: ComposableEnvironment { }
     class First: ComposableEnvironment {
-      @DerivedEnvironment<Second> var second
+      @_DerivedEnvironment<Second> var second
     }
     
     enum Action {

@@ -5,7 +5,7 @@ fileprivate struct IntKey: DependencyKey {
   static var defaultValue: Int { 1 }
 }
 
-fileprivate extension ComposableDependencies {
+fileprivate extension _ComposableDependencies {
   var int: Int {
     get { self[IntKey.self] }
     set { self[IntKey.self] = newValue }
@@ -13,21 +13,21 @@ fileprivate extension ComposableDependencies {
 }
 
 final class ComposableEnvironmentTests: XCTestCase {
-  func testDependency() {
+  func test_Dependency() {
     class Env: ComposableEnvironment {
-      @Dependency(\.int) var int
+      @_Dependency(\.int) var int
     }
     let env = Env()
     XCTAssertEqual(env.int, 1)
   }
   
-  func testDependencyPropagation() {
+  func test_DependencyPropagation() {
     class Parent: ComposableEnvironment {
-      @Dependency(\.int) var int
-      @DerivedEnvironment<Child> var child
+      @_Dependency(\.int) var int
+      @_DerivedEnvironment<Child> var child
     }
     class Child: ComposableEnvironment {
-      @Dependency(\.int) var int
+      @_Dependency(\.int) var int
     }
     let parent = Parent()
     XCTAssertEqual(parent.child.int, 1)
@@ -37,14 +37,14 @@ final class ComposableEnvironmentTests: XCTestCase {
     XCTAssertEqual(parentWith2.child.int, 2)
   }
   
-  func testDependencyOverride() {
+  func test_DependencyOverride() {
     class Parent: ComposableEnvironment {
-      @Dependency(\.int) var int
-      @DerivedEnvironment<Child> var child
-      @DerivedEnvironment var sibling = Child().with(\.int, 3)
+      @_Dependency(\.int) var int
+      @_DerivedEnvironment<Child> var child
+      @_DerivedEnvironment var sibling = Child().with(\.int, 3)
     }
     class Child: ComposableEnvironment {
-      @Dependency(\.int) var int
+      @_Dependency(\.int) var int
     }
     
     let parent = Parent().with(\.int, 2)
@@ -55,12 +55,12 @@ final class ComposableEnvironmentTests: XCTestCase {
   
   func testDerivedWithProperties() {
     class Parent: ComposableEnvironment {
-      @Dependency(\.int) var int
-      @DerivedEnvironment<Child> var child
-      @DerivedEnvironment var sibling = Child(otherInt: 5).with(\.int, 3)
+      @_Dependency(\.int) var int
+      @_DerivedEnvironment<Child> var child
+      @_DerivedEnvironment var sibling = Child(otherInt: 5).with(\.int, 3)
     }
     final class Child: ComposableEnvironment {
-      @Dependency(\.int) var int
+      @_Dependency(\.int) var int
       var otherInt: Int = 4
       required init() {}
       init(otherInt: Int) {
@@ -79,24 +79,24 @@ final class ComposableEnvironmentTests: XCTestCase {
   
   func testLongChainsPropagation() {
     class Parent: ComposableEnvironment {
-      @Dependency(\.int) var int
-      @DerivedEnvironment<C1> var c1
+      @_Dependency(\.int) var int
+      @_DerivedEnvironment<C1> var c1
     }
     final class C1: ComposableEnvironment {
-      @DerivedEnvironment<C2> var c2
+      @_DerivedEnvironment<C2> var c2
     }
     final class C2: ComposableEnvironment {
-      @DerivedEnvironment<C3> var c3
+      @_DerivedEnvironment<C3> var c3
     }
     final class C3: ComposableEnvironment {
-      @DerivedEnvironment<C4> var c4
-      @Dependency(\.int) var int
+      @_DerivedEnvironment<C4> var c4
+      @_Dependency(\.int) var int
     }
     final class C4: ComposableEnvironment {
-      @DerivedEnvironment<C5> var c5
+      @_DerivedEnvironment<C5> var c5
     }
     final class C5: ComposableEnvironment {
-      @Dependency(\.int) var int
+      @_Dependency(\.int) var int
     }
     let parent = Parent().with(\.int, 4)
     XCTAssertEqual(parent.c1.c2.c3.c4.c5.int, 4)
@@ -105,24 +105,24 @@ final class ComposableEnvironmentTests: XCTestCase {
   
   func testModifyingDependenciesOncePrimed() {
     class Parent: ComposableEnvironment {
-      @Dependency(\.int) var int
-      @DerivedEnvironment<C1> var c1
+      @_Dependency(\.int) var int
+      @_DerivedEnvironment<C1> var c1
     }
     final class C1: ComposableEnvironment {
-      @DerivedEnvironment<C2> var c2
+      @_DerivedEnvironment<C2> var c2
     }
     final class C2: ComposableEnvironment {
-      @DerivedEnvironment<C3> var c3
+      @_DerivedEnvironment<C3> var c3
     }
     final class C3: ComposableEnvironment {
-      @DerivedEnvironment<C4> var c4
-      @Dependency(\.int) var int
+      @_DerivedEnvironment<C4> var c4
+      @_Dependency(\.int) var int
     }
     final class C4: ComposableEnvironment {
-      @DerivedEnvironment<C5> var c5
+      @_DerivedEnvironment<C5> var c5
     }
     final class C5: ComposableEnvironment {
-      @Dependency(\.int) var int
+      @_Dependency(\.int) var int
     }
     let parent = Parent().with(\.int, 4)
     XCTAssertEqual(parent.c1.c2.c3.int, 4)
