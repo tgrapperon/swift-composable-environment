@@ -33,7 +33,8 @@ enum Level2Action {
 }
 
 class Level2Environment: ComposableEnvironment {
-  @Dependency(\.rng) var randomNumberGenerator
+  @Dependency(\.rng)
+  var randomNumberGenerator
 
   func randomNumber() -> Future<Int, Never> {
     .init { [randomNumberGenerator] in
@@ -43,26 +44,31 @@ class Level2Environment: ComposableEnvironment {
   }
 }
 
-let level2Reducer = Reducer<Level2State, Level2Action, Level2Environment> {
-  state, action, environment in
+let level2Reducer = Reducer<
+  Level2State,
+  Level2Action,
+  Level2Environment
+> { state, action, environment in
   switch action {
   case let .randomNumber(number):
     state.randomNumber = number
     return .none
+    
   case .requestRandomNumber:
     // Note that we don't have defined any `@Dependency(\.mainQueue)` in environment.
     // We use its global property name instead:
     return environment
       .randomNumber()
       .map(Level2Action.randomNumber)
-      .receive(on: environment.mainQueue)
+      .receive(on: environment.eventHandlingScheduler)
       .eraseToEffect()
   }
 }
 
 struct Level2View: View {
   let store: Store<Level2State, Level2Action>
-  init(store: Store<Level2State, Level2Action>) {
+  
+  init(_ store: Store<Level2State, Level2Action>) {
     self.store = store
   }
 
@@ -86,27 +92,23 @@ struct Level2View: View {
 
 struct Level2View_Preview: PreviewProvider {
   static var previews: some View {
-    Level2View(store:
-      .init(initialState:
-        .init(
-          randomNumber: 5
-        ),
-        reducer: level2Reducer,
-        environment:
-        Level2Environment() // Swift ≥ 5.4 can use .init()
-          .with(\.mainQueue, .immediate)
-          .with(\.rng) { 12 })
-    )
-    Level2View(store:
-      .init(initialState:
-        .init(
-          randomNumber: nil
-        ),
-        reducer: level2Reducer,
-        environment:
-        Level2Environment() // Swift ≥ 5.4 can use .init()
-          .with(\.mainQueue, .immediate)
-          .with(\.rng) { 54 })
-    )
+    Level2View(Store(
+      initialState: .init(
+        randomNumber: 5
+      ),
+      reducer: level2Reducer,
+      environment: Level2Environment() // Swift ≥ 5.4 can use .init()
+        .with(\.eventHandlingScheduler, AnyScheduler.immediate.ignoreOptions())
+        .with(\.rng) { 12 }
+    ))
+    Level2View(Store(
+      initialState: .init(
+        randomNumber: nil
+      ),
+      reducer: level2Reducer,
+      environment: Level2Environment() // Swift ≥ 5.4 can use .init()
+        .with(\.eventHandlingScheduler, AnyScheduler.immediate.ignoreOptions())
+        .with(\.rng) { 54 }
+    ))
   }
 }
