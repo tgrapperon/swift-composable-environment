@@ -31,7 +31,7 @@ public protocol GlobalEnvironment: GlobalDependenciesAccessing {
 extension GlobalDependenciesAccessing {
   /// Use this function to set the values of a given dependency for the global environment.
   ///
-  /// Calls to this function are chainable, and you can specify any ``Dependencies``
+  /// Calls to this function are chainable, and you can specify any `Dependencies`
   /// `KeyPath`, even if the current environment does not expose the corresponding
   /// dependency itself.
   ///

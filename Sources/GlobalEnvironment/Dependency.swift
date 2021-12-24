@@ -1,6 +1,6 @@
 /// Use this property wrapper to access global depencies anywhere.
 ///
-/// You reference the dependency by its `KeyPath` originating from  ``Dependencies``, and
+/// You reference the dependency by its `KeyPath` originating from  `Dependencies`, and
 /// you declare its name in the local environment. The dependency should not be instantiated.
 ///
 /// For example, if the dependency is declared as:
