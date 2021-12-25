@@ -29,6 +29,7 @@ let package = Package(
       dependencies: [
         .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
         "Dependencies",
+        "DependencyAliases",
       ]
     ),
     .testTarget(
@@ -40,10 +41,17 @@ let package = Package(
       dependencies: []
     ),
     .target(
+      name: "DependencyAliases",
+      dependencies: [
+        "Dependencies"
+      ]
+    ),
+    .target(
       name: "GlobalEnvironment",
       dependencies: [
         .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
         "Dependencies",
+        "DependencyAliases",
       ]
     ),
     .testTarget(

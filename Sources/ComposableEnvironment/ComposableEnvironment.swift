@@ -1,5 +1,7 @@
 import Foundation
 @_exported import Dependencies
+@_implementationOnly import DependencyAliases
+
 /// The base class of your environments.
 ///
 /// Subclass this class to define your feature's environment. You can expose

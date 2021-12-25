@@ -1,3 +1,4 @@
+import Dependencies
 
 public struct DependencyAlias<Value>: Hashable {
   public let `default`: WritableKeyPath<Dependencies, Value>

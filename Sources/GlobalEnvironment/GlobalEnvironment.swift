@@ -1,5 +1,5 @@
 @_exported import Dependencies
-
+@_implementationOnly import DependencyAliases
 extension Dependencies {
   static var global: Dependencies = ._new()
 }
