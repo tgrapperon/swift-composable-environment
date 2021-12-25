@@ -51,6 +51,7 @@ extension GlobalDependenciesAccessing {
   @discardableResult
   public func with<V>(_ keyPath: WritableKeyPath<Dependencies, V>, _ value: V) -> Self {
     Dependencies.global[keyPath: keyPath] = value
+    Dependencies.global.synchronizeAliasedDependencies(keyPath)
     return self
   }
   
@@ -58,7 +59,10 @@ extension GlobalDependenciesAccessing {
   /// `Dependencies`.
   public subscript<Value>(keyPath: WritableKeyPath<Dependencies, Value>) -> Value {
     get { Dependencies.global[keyPath: keyPath] }
-    set { Dependencies.global[keyPath: keyPath] = newValue }
+    set {
+      Dependencies.global[keyPath: keyPath] = newValue
+      Dependencies.global.synchronizeAliasedDependencies(keyPath)
+    }
   }
   
   /// A read-only subcript to directly access a global dependency from `Dependencies`.
@@ -67,5 +71,51 @@ extension GlobalDependenciesAccessing {
   ///  ``with(_:_:)`` or ``subscript(_:)`` instead.
   public subscript<Value>(dynamicMember keyPath: KeyPath<Dependencies, Value>) -> Value {
     get { Dependencies.global[keyPath: keyPath] }
+  }
+  
+  /// Identify a dependency to another one.
+  ///
+  /// You can use this method to synchronize identical dependencies from different domains.
+  /// For example, if you defined a main dispatch queue dependency called `.main` in one domain and
+  /// `.mainQueue` in another, you can identify both dependencies using
+  /// ```swift
+  /// environment.aliasing(\.main, to: \.mainQueue)
+  /// ```
+  /// The second argument provides its default value to all aliased dependencies, and all aliased
+  /// dependencies returns this default value until the value any of the aliased dependencies is
+  /// set.
+  ///
+  /// You can set the value of any aliased dependency using any `KeyPath`:
+  /// ```swift
+  /// environment
+  ///   .aliasing(\.main, to: \.mainQueue)
+  ///   .with(\.main, DispatchQueue.main)
+  /// // is equivalent to:
+  /// environment
+  ///   .aliasing(\.main, to: \.mainQueue)
+  ///   .with(\.mainQueue, DispatchQueue.main)
+  /// ```
+  ///
+  /// If you chain multiple aliases for the same dependency, the closest to the root is the one
+  /// responsible for the default value:
+  /// ```swift
+  /// environment
+  ///   .aliasing(\.main, to: \.mainQueue) // <- The default value will be the
+  ///   .aliasing(\.uiQueue, to: \.main)   //    default value of `mainqueue`
+  /// ```
+  /// If dependencies aliased through `DerivedEnvironment` are aliased in the order of environment
+  /// composition, with the dependency closest to the root environment providing the default value if no value is set for any aliased dependency.
+  ///
+  /// - Parameters:
+  ///   - dependency: The `KeyPath` of the aliased dependency in `Dependencies`
+  ///   - to: A `KeyPath` of another dependency in `Dependencies` that serves as a reference value.
+  public func aliasing<Value>(_ dependency: WritableKeyPath<Dependencies, Value>, to `default`: WritableKeyPath<Dependencies, Value>) -> Self {
+    let alias = DependencyAlias(dependency, to: `default`)
+    if let existing = Dependencies.global.alias(`default`) {
+      Dependencies.global.define(existing.appending(alias))
+    } else {
+      Dependencies.global.define(alias)
+    }
+    return self
   }
 }
