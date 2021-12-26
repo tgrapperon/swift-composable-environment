@@ -7,6 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E189A4AE2776179D0090EC9F /* GlobalSchedulersClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = E189A4AD2776179D0090EC9F /* GlobalSchedulersClient.swift */; };
+		E189A4AF2776179D0090EC9F /* GlobalSchedulersClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = E189A4AD2776179D0090EC9F /* GlobalSchedulersClient.swift */; };
+		E189A4B1277619040090EC9F /* NoOptionsScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = E189A4B0277619040090EC9F /* NoOptionsScheduler.swift */; };
+		E189A4B2277619040090EC9F /* NoOptionsScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = E189A4B0277619040090EC9F /* NoOptionsScheduler.swift */; };
+		E189A4B427761B9F0090EC9F /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = E189A4B327761B9F0090EC9F /* Helpers.swift */; };
+		E189A4B527761B9F0090EC9F /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = E189A4B327761B9F0090EC9F /* Helpers.swift */; };
 		E972F1FD26A2B74A00504D39 /* ExampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E972F1EA26A2B74A00504D39 /* ExampleApp.swift */; };
 		E972F1FE26A2B74B00504D39 /* ExampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E972F1EA26A2B74A00504D39 /* ExampleApp.swift */; };
 		E972F20126A2B74B00504D39 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E972F1EC26A2B74A00504D39 /* Assets.xcassets */; };
@@ -24,6 +30,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		E189A4AD2776179D0090EC9F /* GlobalSchedulersClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalSchedulersClient.swift; sourceTree = "<group>"; };
+		E189A4B0277619040090EC9F /* NoOptionsScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoOptionsScheduler.swift; sourceTree = "<group>"; };
+		E189A4B327761B9F0090EC9F /* Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
 		E972F1EA26A2B74A00504D39 /* ExampleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleApp.swift; sourceTree = "<group>"; };
 		E972F1EC26A2B74A00504D39 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E972F1F126A2B74A00504D39 /* Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -75,6 +84,9 @@
 				E972F21B26A2B9B900504D39 /* Level1Feature.swift */,
 				E972F21E26A2BA8400504D39 /* Level2Feature.swift */,
 				E972F22126A2C72200504D39 /* SharedDependencies.swift */,
+				E189A4AD2776179D0090EC9F /* GlobalSchedulersClient.swift */,
+				E189A4B0277619040090EC9F /* NoOptionsScheduler.swift */,
+				E189A4B327761B9F0090EC9F /* Helpers.swift */,
 				E972F1EA26A2B74A00504D39 /* ExampleApp.swift */,
 				E972F1EC26A2B74A00504D39 /* Assets.xcassets */,
 			);
@@ -222,6 +234,9 @@
 				E972F21C26A2B9B900504D39 /* Level1Feature.swift in Sources */,
 				E972F21F26A2BA8400504D39 /* Level2Feature.swift in Sources */,
 				E972F21926A2B9A700504D39 /* Level0Feature.swift in Sources */,
+				E189A4B427761B9F0090EC9F /* Helpers.swift in Sources */,
+				E189A4B1277619040090EC9F /* NoOptionsScheduler.swift in Sources */,
+				E189A4AE2776179D0090EC9F /* GlobalSchedulersClient.swift in Sources */,
 				E972F22226A2C72200504D39 /* SharedDependencies.swift in Sources */,
 				E972F1FD26A2B74A00504D39 /* ExampleApp.swift in Sources */,
 			);
@@ -234,6 +249,9 @@
 				E972F21D26A2B9B900504D39 /* Level1Feature.swift in Sources */,
 				E972F22026A2BA8400504D39 /* Level2Feature.swift in Sources */,
 				E972F21A26A2B9A700504D39 /* Level0Feature.swift in Sources */,
+				E189A4B527761B9F0090EC9F /* Helpers.swift in Sources */,
+				E189A4B2277619040090EC9F /* NoOptionsScheduler.swift in Sources */,
+				E189A4AF2776179D0090EC9F /* GlobalSchedulersClient.swift in Sources */,
 				E972F22326A2C72200504D39 /* SharedDependencies.swift in Sources */,
 				E972F1FE26A2B74B00504D39 /* ExampleApp.swift in Sources */,
 			);

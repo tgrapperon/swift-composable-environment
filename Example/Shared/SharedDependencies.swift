@@ -1,30 +1,40 @@
 import ComposableEnvironment
 import ComposableArchitecture
 
-// mainQueue dependency:
-private struct MainQueueKey: DependencyKey {
-  static var defaultValue: AnySchedulerOf<DispatchQueue> {
-    .main
+// MARK: - EventHandlingScheduler
+
+// We keep this naming for the case if you want to use some background scheduler
+// for your store events for some reason
+private enum EventHandlingSchedulerKey: DependencyKey {
+  public static var defaultValue: NoOptionsSchedulerOf<DispatchQueue> {
+    UIScheduler.shared.eraseToAnyScheduler()
   }
 }
 
-public extension ComposableDependencies {
-  var mainQueue: AnySchedulerOf<DispatchQueue> {
-    get { self[MainQueueKey.self] }
-    set { self[MainQueueKey.self] = newValue }
+extension ComposableDependencies {
+  public var eventHandlingScheduler: NoOptionsSchedulerOf<DispatchQueue> {
+    get { self[EventHandlingSchedulerKey.self] }
+    set { self[EventHandlingSchedulerKey.self] = newValue }
   }
 }
 
-// backgroundQueue dependency:
-private struct BackgroundQueueKey: DependencyKey {
-  static var defaultValue: AnySchedulerOf<DispatchQueue> {
-    DispatchQueue.global().eraseToAnyScheduler()
+// MARK: - GlobalSchedulers
+
+private enum GlobalSchedulersKey: DependencyKey {
+  public static var defaultValue: GlobalSchedulersClient { .live }
+}
+
+extension ComposableDependencies {
+  public var globalSchedulers: GlobalSchedulersClient {
+    get { self[GlobalSchedulersKey.self] }
+    set { self[GlobalSchedulersKey.self] = newValue }
   }
 }
 
-public extension ComposableDependencies {
-  var backgroundQueue: AnySchedulerOf<DispatchQueue> {
-    get { self[BackgroundQueueKey.self] }
-    set { self[BackgroundQueueKey.self] = newValue }
-  }
+public final class StoreSchedulers: ComposableEnvironment {
+  @Dependency(\.eventHandlingScheduler)
+  public var main
+  
+  @Dependency(\.globalSchedulers)
+  public var background
 }
