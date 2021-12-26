@@ -4,104 +4,186 @@
 [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Ftgrapperon%2Fswift-composable-environment%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/tgrapperon/swift-composable-environment)
 [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Ftgrapperon%2Fswift-composable-environment%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/tgrapperon/swift-composable-environment)
 
-This library brings an API similar to SwiftUI's `Environment` to derive and compose `Environment`'s in [The Composable Architecture](https://github.com/pointfreeco/swift-composable-architecture). 
+This library brings an API similar to SwiftUI's `Environment` to derive and compose `Environment`'s in [The Composable Architecture](https://github.com/pointfreeco/swift-composable-architecture) (TCA). 
 
-## Example
-Each dependency we want to share using `ComposableEnvironment` should be declared with a `DependencyKey`'s in a similar fashion one declares custom `EnvironmentValue`'s in SwiftUI using `EnvironmentKey`'s. Let define a `mainQueue` dependency:
-````swift
+By `Environment`, one understands a type that vends *dependencies*. This library eases this process by standardizing these dependencies, and the way they are passed from one environment type to another when composing domains using TCA. Like in SwiftUI, this library allows passing values (in this case dependencies) down a tree of values (in this case the reducers) without having to specify them at each step. You don't need to provide initial values for dependencies in your `Environment`'s, you don't need to inject dependencies from a parent environment to a child environment, and in many cases, you don't even need to instantiate the child environment.
+
+This library comes with two mutually exclusive modules, `ComposableEnvironment` and `GlobalEnvironment`, which are providing different functionalities for different tradeoffs.
+`ComposableEnvironment` allows defining environments where dependencies can be overridden at any point in the reducer chain. Like in SwiftUI, setting a value for a dependency propagates downstream until it is eventually overridden again.
+`GlobalEnvironment` allows defining global dependencies that are the same for all reducers in the chain. This is the most frequent configuration.
+Both modules are defined in the same repository to maintain source compatibility between them.
+
+**The `GlobalEnvironment` module should fit most of the cases.**
+
+## Defining dependencies
+Each dependency we want to share should be declared with a `DependencyKey`'s in a similar fashion one declares custom `EnvironmentValue`'s in SwiftUI using `EnvironmentKey`'s. Let define a `mainQueue` dependency:
+```swift
 struct MainQueueKey: DependencyKey {
   static var defaultValue: AnySchedulerOf<DispatchQueue> { .main }
 }
-````
-We also install it in `ComposableDependencies`:
-````swift
-extension ComposableDependencies {
+```
+This key doesn't need to be public. If the dependency is an existential type, it can be even used as a `DependencyKey` itself, without needing to introduce an additional type.
+
+Like we would do with SwiftUI's `EnvironmentValues`, we also install it in `Dependencies`:
+```swift
+extension Dependencies {
   var mainQueue: AnySchedulerOf<DispatchQueue> {
     get { self[MainQueueKey.self] }
     set { self[MainQueueKey.self] = newValue }
   }
 }
-````
-Now, let define `RootEnvironment`:
-````swift
-class RootEnvironment: ComposableEnvironment {
-  @Dependency(\.mainQueue) var mainQueue
-}
-````
-Please note that we didn't have to set an initial value to `mainQueue`. `@Dependency` are immutable, but we can easily attribute new values with a chaining API:
-````swift
-let failingMain = Root().with(\.mainQueue, .failing)
-````
+```
+## Using dependencies
+Whereas you're using `ComposableEnvironment` or `GlobalEnvironment`, there are distinct ways to access your dependencies.
 
-An now, the prestige! Let `ChildEnvironment` be 
-````swift
-class ChildEnvironment: ComposableEnvironment {
-  @Dependency(\.mainQueue) var mainQueue
+### `@Dependency` property wrapper
+You use the `@Dependency` property wrapper to expose a dependency to your environment. This property wrapper takes as argument the `KeyPath` of the property you defined in `Dependencies`. For example, to expose the `mainQueue` defined above, you declare
+```swift
+@Dependency(\.mainQueue) var main
+```
+Note that you don't need to provide a value for the dependency. The effective value for this property is the current value from the environment, or the `default` value if you defined none.
+
+### Implicit subscript
+You can also already use a subscript from your `Environment` to directly access the dependency without having to expose it. You use this subscript with the `KeyPath` from the property defined in `Dependencies`. For example:
+```swift
+environment[\.mainQueue]
+```
+returns the same value as `@Dependency(\.mainQueue)`.
+
+Whereas you use one or another is up to you. The implicit subscript is faster, but some prefer having explicit declarations to assess the environment's dependencies.
+
+### (Bonus) Direct access
+When using `ComposableEnvironment`, you can directly access a dependency by using its computed property name in `Dependencies` from any `ComposableEnvironment` subclass, even if you did not expose the dependency using the `@Dependency` property wrapper:
+```swift
+environment.mainQueue
+```
+This direct access is unfortunately not possible when using `GlobalEnvironment`.
+
+## Environments
+
+The way you define environments differs, whereas you're using `ComposableEnvironment` or `GlobalEnvironment`.
+
+### Defining Environments while using `ComposableEnvironment`
+When using `ComposableEnvironment`, all your environments need to be subclasses of `ComposableEnvironment`. This is unfortunately required to automatically handle the storage of the private environment values state at a given node. Let define the `ParentEnvironment` exposing the `mainQueue` dependency:
+```swift
+public class ParentEnvironment: ComposableEnvironment {
+  @Dependency(\.mainQueue) var main
 }
-````
-If `RootEnvironment` is modified like
-````swift
-class RootEnvironment: ComposableEnvironment {
-  @Dependency(\.mainQueue) var mainQueue
+```
+Imagine that you need to embed a `Child` TCA feature into the `Parent` feature. You declare the embedding using the `@DerivedEnvironment` property wrapper:
+```swift
+public class ParentEnvironment: ComposableEnvironment {
+  @Dependency(\.mainQueue) var main
   @DerivedEnvironment<ChildEnvironment> var child
 }
-````
-`child.mainQueue` will be synchronized with `RootEnvironment`'s value. In other words,
-````swift
-Root().with(\.mainQueue, .failing).child.mainQueue == .failing
-````
-We only have to declare `ChildEnvironment` as a property of `RootEnvironment`, with the `@DerivedEnvironment` property wrapper. Like with SwiftUI's `View`, if one modifies a dependency with `with(keypath, value)`, only the environment's instance and its derived environments will receive the new dependency. Its eventual parent and siblings will be unaffected.
-
-### AutoComposableEnvironment
-Since [`v0.4`](https://github.com/tgrapperon/swift-composable-environment/releases/tag/0.4.0), you can optionally forgo `@Dependency` and `@DerivedEnvironment` declarations:
-
-- You can directly access dependencies using their property name defined in `ComposableDepencies` directly in your `ComposableEnvironment` subclass, as if you defined `@Dependency(\.someDependency) var someDependency`.
-
-- You can use environment-less pullbacks. They will vend your derived feature's reducer a derived environment of the expected type. This is equivalent to defining  `@DerivedEnvironment<ChildEnvironment> var child` in your parent's environment, and using `[…], environment:\.child)` when pulling-back.
-
-You still need `@Dependency` if you want to customize the exposed name of your dependency in your environment, like
-```swift
-@Dependency(\.someDependency) var anotherNameForTheDependency
 ```
-You still need `@DerivedEnvironment` if you want to override the dependencies inside the environment's chain:
+When you access the `child` property of `ParentEnvironment`, it automatically inherit the dependencies from `ParentEnvironment`. You can pullback `childReducer` using the standard methods:
 ```swift
-@DerivedEnvironment var child = ChildEnvironment().with(\.someDependency, someValue)
+childReducer.pullback(state: \.child, action: /ParentAction.child, environment: \.child)
 ```
-The example app shows how this feature can be used and mixed with the property-wrapper approach.
+You can assign a value to the child environment inline with its declaration, or let the library handle the initialization of an instance for you.
+In this last case, you can even embed the child reducer using environment-less pullbacks: 
+```swift
+childReducer.pullback(state: \.child, action: /ParentAction.child)
+```
+Note: If you use an environment-less pullback, any initial value you may have defined inline will be discarded. In this case, you should use standard pullbacks with the `\.child` `KeyPath` as a function `(ParentEnvironment) -> ChildEnvironment`.
 
-## Correspondance with SwiftUI's Environment
-In order to ease its learning curve, the library bases its API on SwiftUI's Environment. We have the following functional correspondances:
+### Defining Environments while using `GlobalEnvironment`
+When using `GlobalEnvironment`, your environment, whereas it's a value or a reference type, should conform to the `GlobalEnvironment` protocol.
+You can then define and use your dependencies in the same way as for `ComposableEnvironment`. As all dependencies are globally shared and there are no specific dependencies to inherit, it makes less sense to use the `@DerivedEnvironment` property wrapper if you're not using it to define dependency aliases (see below).
+```swift
+public struct ParentEnvironment: GlobalEnvironment {
+  public init() {}
+  @Dependency(\.mainQueue) var main
+}
+```
+You still have access to environment-less pullbacks, with the same API:
+```swift
+childReducer.pullback(state: \.child, action: /ParentAction.child)
+```
+The only requirement for `GlobalEnvironment` is to provide an `init()` initializer. If this is not possible for your child environment, you can still implement the `GlobalDependenciesAccessing` marker protocol which has no requirements but gives your type access to global dependencies using the implicit subscript accessors. You can also do nothing and use the `@Dependency` which has no restriction over its host like the `ComposableEnvironment` version has (it needs to be installed in a `ComposableEnvironement` subclass).
+If you can't conform to `GlobalEnvironment`, you only lose access to the environment-less pullbacks.
+
+## Assigning values to dependencies
+Once dependencies are defined as computed properties of the `Dependencies`, you only access them through your environment, whereas it's a `ComposableEnvironment` subclass or some type conforming to `GlobalDependenciesAccessing`.
+
+To set a value to a dependency, you use the `with(keyPath,value)` chainable method from your environment:
+```
+environment
+  .with(\.mainQueue, DispatchQueue.main)
+  .with(\.uuidGenerator, { UUID() })
+  …
+```
+When you're using `GlobalEnvironment`, each dependency is set globally. If you set the same dependency twice, the last call prevails.
+When you're using `ComposableEnvironment`, each dependency is set along the dependency tree until it eventually is set again using a `with(keyPath, anotherValue)` call on a child environment. This works in the same fashion as SwiftUI `Environment`.
+
+## Aliasing dependencies
+In the case the same dependency was defined by different domains using different computed properties in `Dependencies`, you can alias them using the `aliasing(dependencyKeyPath, to: referenceDependencyKeyPath)` chainable method from your environment. For example, if you defined the main queue as `.main` in some feature, and as `mainQueue` in another, you can alias both using
+```swift
+environment.aliasing(\.main, to: \.mainQueue)
+```
+Once aliased, you can assign a value using either `KeyPath`. If no value is set for the dependency, the second argument provides its default for both `KeyPaths. If you define multiple
+
+You can also alias dependencies "on the spot", using the `@DerivedEnvironment` property wrapper. Its initializer provides a closure transforming a provided `AliasBuilder`.
+This type has only one chainable method, `alias(dependencyKeyPath, to: referenceDependencyKeyPath)`. For example, if the `main` dependency is defined in the `child` derived environment, you can define an alias to the `mainQueue` dependency from `ParentEnvironment` using:
+```swift
+public class ParentEnvironment: ComposableEnvironment {
+  @Dependency(\.mainQueue) var mainQueue
+  @DerivedEnvironment<ChildEnvironment>(aliases: {
+    $0.alias(\.main, to: \.mainQueue)
+  }) var child
+}
+```
+When using this property wrapper, you don't need to define the alias from the environment using `.aliasing()`.
+
+Dependencies aliases are always global.
+
+## Environment-less pullbacks
+
+### Omitting the `@DerivedEnvironment` property wrapper
+You can forgo `@DerivedEnvironment` declarations when:
+- You don't need to customize dependencies specifically for the child environment when using `ComposableEnvironment`.
+- You don't need to alias dependencies "on the spot", using the `@DerivedEnvironment` property wrapper, when using either module.
+The example app shows how this feature can be used and mixed with the property-wrapper approach when using `ComposableEnvironment`.
+
+### Using environment-less pullbacks
+When your environment can be instantiated automatically, you can use environment-less pullbacks (this include `forEach` variants):
+```swift
+childReducer.pullback(state: \.child, action: /ParentAction.child)
+// or
+childReducer.forEach(state: \.children, action: /ParentAction.children)
+```
+Please note that in order to access such pullbacks when using  `GlobalEnvironment`, your environment needs to conform to the `GlobalEnvironment` protocol.
+
+## Choosing between `ComposableEnvironment` and `GlobalEnvironment`
+As a rule of thumb, if you need to modify your dependencies in the middle of the environment's tree, you should use `ComposableEnvironment`. If all dependencies are shared across your environments, you should use `GlobalEnvironment`. As the first configuration is quite rare, we recommend using `GlobalEnvironment` if you're in doubt, as it is the simplest to implement in an existing TCA project.
+
+The principal difference between the two approaches are summarized in the following table:
+|  | `ComposableEnvironment` | `GlobalEnvironment` |
+|---|---|---|
+| Environment Type | Classes | Any existential <br>(struct, classes, etc.) |
+| Environment Tree | All nodes should be <br>`ComposableEnvironment` subclasses | Free, <br>can opt-in/opt-out at any point |
+| Dependency values | Customizable per instance | Globally defined |
+| Access to dependencies | `@Dependency`, direct, implicit | `@Dependency`, implicit |
+
+## Correspondence with SwiftUI's Environment
+In order to ease its learning curve, the library bases its API on SwiftUI's Environment. We have the following functional correspondences:
 | SwiftUI | ComposableEnvironment| Usage |
 |---|---|---|
 |`EnvironmentKey`|`DependencyKey`| Identify a shared value |
-|`EnvironmentValues`|`ComposableDependencies`| Expose a shared value |
+|`EnvironmentValues`|`Dependencies`| Expose a shared value |
 |`@Environment`|`@Dependency`| Retrieve a shared value |
-|`View`|`ComposableEnvironment`| A node |
+|`View`|`(Composable|Global)Environment`| A node |
 |`View.body`| `@DerivedEnvironment`'s | A list of children of the node |
-|`View.environment(keyPath:value:)`|`ComposableEnvironment.with(keyPath:value:)`| Set a shared value for a node and its children |
+|`View.environment(keyPath:value:)`|`(Composable|Global)Environment.with(keyPath:value:)`| Set a shared value for a node and its children |
 
 ## Documentation
 The latest documentation for ComposableEnvironment's APIs is available [here](https://github.com/tgrapperon/swift-composable-environment/wiki/ComposableEnvironment-Documentation).
 
-## Advantages over manual management
-- You don't have to instantiate your child environments, nor to manage their initializers.
-- You don't have to host a dependency in some environment for the sole purpose of passing it to child environments. You can define a dependency in the `Root` environment and retrieve it in any descendant (if none of its ancester has overidden the root's value in the meantime). You don't have to declare this dependency in the `Environment`'s which are not using it explicitly.
-- Your dependencies are clearly tagged. It's more difficult to mix up dependencies with the same interface.
-- `ComposableEnvironment`'s instances are cached, and you can access them direcly by their `KeyPath` in their parent when pulling-back your reducers.
-- You can quickly override the dependencies of any environment with a chaining API. You can easily create specific configurations for your tests or `SwiftUI` previews.
-- You write much less code, and you get more autocompletion.
-- You can fall back to manual management with `ComposableEnvironment` if necessary, and store properties that are not `@Dependency`'s.
-
-## Inconvenients compared to manual management
-- Your environments need to be subclasses of `ComposableEnvironment`.
-- Your environments must be connected through `@DerivedEnvironment`. If one of the members of the environment tree is not a `ComposableEnvironment`, nor derived from another via `@DerivedEnvironment`, automatic syncing of dependencies will stop to work downstream, as the next `ComposableEnvironment` will act as a root for its subtree (I guess some safeguards are possible).
-- You need to declare your dependencies explicitly in the `ComposedDependencies` pseudo-namespace. It may require to plan ahead if you're working with an highly modularized application. I guess it should be possible to define equivalence relations between dependencies at some point. Otherwise, I would recommend to define transversal dependencies like `mainQueue` or `Date`, in a separate module that can be shared by each feature.
-
 ## Installation
-
 Add 
 ```swift
-.package(url: "https://github.com/tgrapperon/swift-composable-environment", from: "0.0.4")
+.package(url: "https://github.com/tgrapperon/swift-composable-environment", from: "0.1.0")
 ```
 to your Package dependencies in `Package.swift`, and then
 ```swift
