@@ -16,11 +16,13 @@ public struct DependencyAliases {
   }
 
   public func canonicalAlias<T>(for dependency: T) -> T where T: Hashable {
-    orbit(for: dependency).last ?? dependency
+    if aliases.isEmpty { return dependency }
+    return orbit(for: dependency).last ?? dependency
   }
 
   func orbit<T>(for dependency: T) -> [T] where T: Hashable {
     var orbit = [dependency]
+    if aliases.isEmpty { return orbit }
     var dependency = dependency
     while let alias = aliases[dependency] as? T {
       guard !orbit.contains(alias) else { break }
