@@ -52,7 +52,7 @@ returns the same value as `@Dependency(\.mainQueue)`.
 
 Whereas you use one or another is up to you. The implicit subscript is faster, but some prefer having explicit declarations to assess the environment's dependencies.
 
-### (Bonus) Direct access
+### Direct access (`ComposableEnvironment` only)
 When using `ComposableEnvironment`, you can directly access a dependency by using its computed property name in `Dependencies` from any `ComposableEnvironment` subclass, even if you did not expose the dependency using the `@Dependency` property wrapper:
 ```swift
 environment.mainQueue
@@ -147,10 +147,10 @@ You can forgo `@DerivedEnvironment` declarations when:
 The example app shows how this feature can be used and mixed with the property-wrapper approach when using `ComposableEnvironment`.
 
 ### Using environment-less pullbacks
-When your environment can be instantiated automatically, you can use environment-less pullbacks (this include `forEach` variants):
+When your environment can be instantiated automatically, you can use environment-less pullbacks:
 ```swift
 childReducer.pullback(state: \.child, action: /ParentAction.child)
-// or
+// or, for collections of features:
 childReducer.forEach(state: \.children, action: /ParentAction.children)
 ```
 Please note that in order to access such pullbacks when using  `GlobalEnvironment`, your environment needs to conform to the `GlobalEnvironment` protocol.
@@ -158,7 +158,7 @@ Please note that in order to access such pullbacks when using  `GlobalEnvironmen
 ## Choosing between `ComposableEnvironment` and `GlobalEnvironment`
 As a rule of thumb, if you need to modify your dependencies in the middle of the environment's tree, you should use `ComposableEnvironment`. If all dependencies are shared across your environments, you should use `GlobalEnvironment`. As the first configuration is quite rare, we recommend using `GlobalEnvironment` if you're in doubt, as it is the simplest to implement in an existing TCA project.
 
-The principal difference between the two approaches are summarized in the following table:
+The principal differences between the two approaches are summarized in the following table:
 |  | `ComposableEnvironment` | `GlobalEnvironment` |
 |---|---|---|
 | Environment Type | Classes | Any existential <br>(struct, classes, etc.) |
