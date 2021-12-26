@@ -46,7 +46,7 @@ public extension GlobalDependenciesAccessing {
   /// ```
   @discardableResult
   func with<V>(_ keyPath: WritableKeyPath<Dependencies, V>, _ value: V) -> Self {
-    for alias in Dependencies.aliases.preimage(for: keyPath) {
+    for alias in Dependencies.aliases.aliasing(with: keyPath) {
       Dependencies.global[keyPath: alias] = value
     }
     return self
@@ -55,9 +55,9 @@ public extension GlobalDependenciesAccessing {
   /// A read-write subcript to directly access a dependency from its `KeyPath` in
   /// `Dependencies`.
   subscript<Value>(keyPath: WritableKeyPath<Dependencies, Value>) -> Value {
-    get { Dependencies.global[keyPath: Dependencies.aliases.canonicalAlias(for: keyPath)] }
+    get { Dependencies.global[keyPath: Dependencies.aliases.standardAlias(for: keyPath)] }
     set {
-      for alias in Dependencies.aliases.preimage(for: keyPath) {
+      for alias in Dependencies.aliases.aliasing(with: keyPath) {
         Dependencies.global[keyPath: alias] = newValue
       }
     }
@@ -68,7 +68,7 @@ public extension GlobalDependenciesAccessing {
   /// the setter part of a `Dependency` property wrapper, which is not allowed yet. You can use
   ///  ``with(_:_:)`` or ``subscript(_:)`` instead.
   subscript<Value>(dynamicMember keyPath: KeyPath<Dependencies, Value>)
-    -> Value { Dependencies.global[keyPath: Dependencies.aliases.canonicalAlias(for: keyPath)] }
+    -> Value { Dependencies.global[keyPath: Dependencies.aliases.standardAlias(for: keyPath)] }
 
   /// Identify a dependency to another one.
   ///

@@ -82,7 +82,7 @@ open class ComposableEnvironment {
   /// ```
   @discardableResult
   public func with<V>(_ keyPath: WritableKeyPath<Dependencies, V>, _ value: V) -> Self {
-    for alias in Self.aliases.preimage(for: keyPath) {
+    for alias in Self.aliases.aliasing(with: keyPath) {
       dependencies[keyPath: alias] = value
     }
     return self
@@ -92,10 +92,10 @@ open class ComposableEnvironment {
   /// `Dependencies`.
   public subscript<Value>(keyPath: WritableKeyPath<Dependencies, Value>) -> Value {
     get {
-      dependencies[keyPath: Self.aliases.canonicalAlias(for: keyPath)]
+      dependencies[keyPath: Self.aliases.standardAlias(for: keyPath)]
     }
     set {
-      for alias in Self.aliases.preimage(for: keyPath) {
+      for alias in Self.aliases.aliasing(with: keyPath) {
         dependencies[keyPath: alias] = newValue
       }
     }
@@ -106,7 +106,7 @@ open class ComposableEnvironment {
   /// the setter part of a ``Dependency`` property wrapper, which is not allowed yet. You can use
   ///  ``with(_:_:)`` or ``subscript(_:)`` instead.
   public subscript<Value>(dynamicMember keyPath: KeyPath<Dependencies, Value>)
-    -> Value { dependencies[keyPath: Self.aliases.canonicalAlias(for: keyPath)] }
+    -> Value { dependencies[keyPath: Self.aliases.standardAlias(for: keyPath)] }
 
   /// Identify a dependency to another one.
   ///
@@ -145,8 +145,10 @@ open class ComposableEnvironment {
   /// - Parameters:
   ///   - dependency: The `KeyPath` of the aliased dependency in `Dependencies`
   ///   - to: A `KeyPath` of another dependency in `Dependencies` that serves as a reference value.
-  public func aliasing<Value>(_ dependency: WritableKeyPath<Dependencies, Value>,
-                              to default: WritableKeyPath<Dependencies, Value>) -> Self {
+  public func aliasing<Value>(
+    _ dependency: WritableKeyPath<Dependencies, Value>,
+    to default: WritableKeyPath<Dependencies, Value>
+  ) -> Self {
     Self.aliases.alias(dependency: dependency, to: `default`)
     upToDateDerivedEnvironments.removeAllObjects()
     return self
