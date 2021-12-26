@@ -1,6 +1,6 @@
-import Foundation
 @_exported import Dependencies
 @_implementationOnly import DependencyAliases
+import Foundation
 
 /// The base class of your environments.
 ///
@@ -45,9 +45,10 @@ open class ComposableEnvironment {
       upToDateDerivedEnvironments.removeAllObjects()
     }
   }
-  
+
+  static var aliases = DependencyAliases()
   var upToDateDerivedEnvironments: NSHashTable<ComposableEnvironment> = .weakObjects()
-  
+
   @discardableResult
   func updatingFromParentIfNeeded(_ parent: ComposableEnvironment) -> Self {
     if !parent.upToDateDerivedEnvironments.contains(self) {
@@ -58,7 +59,7 @@ open class ComposableEnvironment {
     }
     return self
   }
-  
+
   /// Use this function to set the values of a given dependency for this environment and all its
   /// descendants.
   ///
@@ -81,29 +82,32 @@ open class ComposableEnvironment {
   /// ```
   @discardableResult
   public func with<V>(_ keyPath: WritableKeyPath<Dependencies, V>, _ value: V) -> Self {
-    dependencies[keyPath: keyPath] = value
-    dependencies.synchronizeAliasedDependencies(keyPath)
+    for alias in Self.aliases.preimage(for: keyPath) {
+      dependencies[keyPath: alias] = value
+    }
     return self
   }
-  
+
   /// A read-write subcript to directly access a dependency from its `KeyPath` in
   /// `Dependencies`.
   public subscript<Value>(keyPath: WritableKeyPath<Dependencies, Value>) -> Value {
-    get { dependencies[keyPath: keyPath] }
+    get {
+      dependencies[keyPath: Self.aliases.canonicalAlias(for: keyPath)]
+    }
     set {
-      dependencies[keyPath: keyPath] = newValue
-      dependencies.synchronizeAliasedDependencies(keyPath)
+      for alias in Self.aliases.preimage(for: keyPath) {
+        dependencies[keyPath: alias] = newValue
+      }
     }
   }
-  
+
   /// A read-only subcript to directly access a dependency from `Dependencies`.
   /// - Remark: This direct access can't be used to set a dependency, as it will try to go through
   /// the setter part of a ``Dependency`` property wrapper, which is not allowed yet. You can use
   ///  ``with(_:_:)`` or ``subscript(_:)`` instead.
-  public subscript<Value>(dynamicMember keyPath: KeyPath<Dependencies, Value>) -> Value {
-    get { dependencies[keyPath: keyPath] }
-  }
-  
+  public subscript<Value>(dynamicMember keyPath: KeyPath<Dependencies, Value>)
+    -> Value { dependencies[keyPath: Self.aliases.canonicalAlias(for: keyPath)] }
+
   /// Identify a dependency to another one.
   ///
   /// You can use this method to synchronize identical dependencies from different domains.
@@ -135,18 +139,33 @@ open class ComposableEnvironment {
   ///   .aliasing(\.uiQueue, to: \.main)   //    default value of `mainqueue`
   /// ```
   /// If dependencies aliased through `DerivedEnvironment` are aliased in the order of environment
-  /// composition, with the dependency closest to the root environment providing the default value if no value is set for any aliased dependency.
+  /// composition, with the dependency closest to the root environment providing the default value
+  /// if no value is set for any aliased dependency.
   ///
   /// - Parameters:
   ///   - dependency: The `KeyPath` of the aliased dependency in `Dependencies`
   ///   - to: A `KeyPath` of another dependency in `Dependencies` that serves as a reference value.
-  public func aliasing<Value>(_ dependency: WritableKeyPath<Dependencies, Value>, to `default`: WritableKeyPath<Dependencies, Value>) -> Self {
-    let alias = DependencyAlias(dependency, to: `default`)
-    if let existing = dependencies.alias(`default`) {
-      dependencies.define(existing.appending(alias))
-    } else {
-      dependencies.define(alias)
-    }
+  public func aliasing<Value>(_ dependency: WritableKeyPath<Dependencies, Value>,
+                              to default: WritableKeyPath<Dependencies, Value>) -> Self {
+    Self.aliases.alias(dependency: dependency, to: `default`)
+    upToDateDerivedEnvironments.removeAllObjects()
     return self
+  }
+}
+
+public extension Dependencies {
+  /// Use this static method to reset all aliases you may have set between dependencies.
+  /// You typically call this method during the `setUp()` method of some `XCTestCase` subclass:
+  /// ```swift
+  /// class SomeFeatureTests: XCTextCase {
+  ///   override func setUp() {
+  ///     super.setUp()
+  ///     Dependencies.clearAliases()
+  ///   }
+  ///   // …
+  /// }
+  /// ```
+  static func clearAliases() {
+    ComposableEnvironment.aliases.clear()
   }
 }

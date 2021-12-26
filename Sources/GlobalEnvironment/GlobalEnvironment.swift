@@ -2,6 +2,7 @@
 @_implementationOnly import DependencyAliases
 extension Dependencies {
   static var global: Dependencies = ._new()
+  static var aliases = DependencyAliases()
 }
 
 /// A marker protocol that provides convenient access to global dependencies.
@@ -9,11 +10,6 @@ extension Dependencies {
 /// This protocol has not requirements. By conforming to it you expose some convenient methods to
 /// setup and access global depencies.
 public protocol GlobalDependenciesAccessing {}
-
-extension GlobalDependenciesAccessing {
-  /// An accessor to the global dependencies.
-  public var globalDependencies: Dependencies { Dependencies.global }
-}
 
 /// A protocol characterizing a type that has no local dependencies.
 ///
@@ -28,7 +24,7 @@ public protocol GlobalEnvironment: GlobalDependenciesAccessing {
   init()
 }
 
-extension GlobalDependenciesAccessing {
+public extension GlobalDependenciesAccessing {
   /// Use this function to set the values of a given dependency for the global environment.
   ///
   /// Calls to this function are chainable, and you can specify any `Dependencies`
@@ -49,30 +45,31 @@ extension GlobalDependenciesAccessing {
   ///   .with(\.mainQueue, .main)
   /// ```
   @discardableResult
-  public func with<V>(_ keyPath: WritableKeyPath<Dependencies, V>, _ value: V) -> Self {
-    Dependencies.global[keyPath: keyPath] = value
-    Dependencies.global.synchronizeAliasedDependencies(keyPath)
+  func with<V>(_ keyPath: WritableKeyPath<Dependencies, V>, _ value: V) -> Self {
+    for alias in Dependencies.aliases.preimage(for: keyPath) {
+      Dependencies.global[keyPath: alias] = value
+    }
     return self
   }
-  
+
   /// A read-write subcript to directly access a dependency from its `KeyPath` in
   /// `Dependencies`.
-  public subscript<Value>(keyPath: WritableKeyPath<Dependencies, Value>) -> Value {
-    get { Dependencies.global[keyPath: keyPath] }
+  subscript<Value>(keyPath: WritableKeyPath<Dependencies, Value>) -> Value {
+    get { Dependencies.global[keyPath: Dependencies.aliases.canonicalAlias(for: keyPath)] }
     set {
-      Dependencies.global[keyPath: keyPath] = newValue
-      Dependencies.global.synchronizeAliasedDependencies(keyPath)
+      for alias in Dependencies.aliases.preimage(for: keyPath) {
+        Dependencies.global[keyPath: alias] = newValue
+      }
     }
   }
-  
+
   /// A read-only subcript to directly access a global dependency from `Dependencies`.
   /// - Remark: This direct access can't be used to set a dependency, as it will try to go through
   /// the setter part of a `Dependency` property wrapper, which is not allowed yet. You can use
   ///  ``with(_:_:)`` or ``subscript(_:)`` instead.
-  public subscript<Value>(dynamicMember keyPath: KeyPath<Dependencies, Value>) -> Value {
-    get { Dependencies.global[keyPath: keyPath] }
-  }
-  
+  subscript<Value>(dynamicMember keyPath: KeyPath<Dependencies, Value>)
+    -> Value { Dependencies.global[keyPath: Dependencies.aliases.canonicalAlias(for: keyPath)] }
+
   /// Identify a dependency to another one.
   ///
   /// You can use this method to synchronize identical dependencies from different domains.
@@ -104,18 +101,34 @@ extension GlobalDependenciesAccessing {
   ///   .aliasing(\.uiQueue, to: \.main)   //    default value of `mainqueue`
   /// ```
   /// If dependencies aliased through `DerivedEnvironment` are aliased in the order of environment
-  /// composition, with the dependency closest to the root environment providing the default value if no value is set for any aliased dependency.
+  /// composition, with the dependency closest to the root environment providing the default value
+  /// if no value is set for any aliased dependency.
   ///
   /// - Parameters:
   ///   - dependency: The `KeyPath` of the aliased dependency in `Dependencies`
   ///   - to: A `KeyPath` of another dependency in `Dependencies` that serves as a reference value.
-  public func aliasing<Value>(_ dependency: WritableKeyPath<Dependencies, Value>, to `default`: WritableKeyPath<Dependencies, Value>) -> Self {
-    let alias = DependencyAlias(dependency, to: `default`)
-    if let existing = Dependencies.global.alias(`default`) {
-      Dependencies.global.define(existing.appending(alias))
-    } else {
-      Dependencies.global.define(alias)
-    }
+  func aliasing<Value>(
+    _ dependency: WritableKeyPath<Dependencies, Value>,
+    to default: WritableKeyPath<Dependencies, Value>
+  ) -> Self {
+    Dependencies.aliases.alias(dependency: dependency, to: `default`)
     return self
+  }
+}
+
+public extension Dependencies {
+  /// Use this static method to reset all aliases you may have set between dependencies.
+  /// You typically call this method during the `setUp()` method of some `XCTestCase` subclass:
+  /// ```swift
+  /// class SomeFeatureTests: XCTextCase {
+  ///   override func setUp() {
+  ///     super.setUp()
+  ///     Dependencies.clearAliases()
+  ///   }
+  ///   // …
+  /// }
+  /// ```
+  static func clearAliases() {
+    Self.aliases.clear()
   }
 }

@@ -29,25 +29,15 @@ public final class DerivedEnvironment<Environment> where Environment: GlobalEnvi
 
   /// See ``DerivedEnvironment`` discussion
   public init(wrappedValue: Environment,
-              aliases: ((inout AliasBuilder<Environment>) -> Void)? = nil) {
+              aliases: ((AliasBuilder<Environment>) -> AliasBuilder<Environment>)? = nil) {
     self.environment = wrappedValue
-    self.aliasBuilder = Self.aliasBuilder(aliases)
+    self.aliasBuilder = aliases.map { $0(.init()) }
   }
 
   /// See ``DerivedEnvironment`` discussion
-  public init(aliases: ((inout AliasBuilder<Environment>) -> Void)? = nil) {
+  public init(aliases: ((AliasBuilder<Environment>) -> AliasBuilder<Environment>)? = nil) {
     self.environment = Environment()
-    self.aliasBuilder = Self.aliasBuilder(aliases)
-  }
-
-  static func aliasBuilder(_ aliases: ((inout AliasBuilder<Environment>) -> Void)?)
-    -> AliasBuilder<Environment>? {
-    guard let aliases = aliases else {
-      return nil
-    }
-    var aliasBuilder = AliasBuilder<Environment>()
-    aliases(&aliasBuilder)
-    return aliasBuilder
+    self.aliasBuilder = aliases.map { $0(.init()) }
   }
 
   public var wrappedValue: Environment {
@@ -78,8 +68,10 @@ public struct AliasBuilder<Environment> where Environment: GlobalDependenciesAcc
   /// - Parameters:
   ///   - dependency: The `KeyPath` of the aliased dependency in `Dependencies`
   ///   - to: A `KeyPath` of another dependency in `Dependencies` that serves as a reference value.
-  public func alias<Dependency>(_ dependency: WritableKeyPath<Dependencies, Dependency>,
-                                to default: WritableKeyPath<Dependencies, Dependency>) -> Self {
+  public func alias<Dependency>(
+    _ dependency: WritableKeyPath<Dependencies, Dependency>,
+    to default: WritableKeyPath<Dependencies, Dependency>
+  ) -> Self {
     AliasBuilder {
       transforming($0)
         .aliasing(dependency, to: `default`)

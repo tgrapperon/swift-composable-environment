@@ -43,8 +43,12 @@ let package = Package(
     .target(
       name: "DependencyAliases",
       dependencies: [
-        "Dependencies"
+        "Dependencies",
       ]
+    ),
+    .testTarget(
+      name: "DependencyAliasesTests",
+      dependencies: ["DependencyAliases"]
     ),
     .target(
       name: "GlobalEnvironment",

@@ -49,7 +49,7 @@ public struct Dependencies {
     set { values[ObjectIdentifier(key)] = .defined(newValue) }
   }
 
-  /// - Warning: This function is public for implementation reasons. You shouldn't have to call it
+  /// - Warning: This method is public for implementation reasons. You shouldn't have to call it
   /// when using the library.
   public mutating func _mergeFromUpstream(_ upstreamDependencies: Dependencies) {
     // We should preserve dependencies that were defined explicitely.

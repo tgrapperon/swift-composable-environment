@@ -30,6 +30,6 @@ public struct Dependency<Value> {
   }
   
   public var wrappedValue: Value {
-    Dependencies.global[keyPath: keyPath]
+    Dependencies.global[keyPath: Dependencies.aliases.canonicalAlias(for: keyPath)]
   }
 }

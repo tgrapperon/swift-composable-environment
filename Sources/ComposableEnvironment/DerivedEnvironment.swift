@@ -51,25 +51,15 @@ public final class DerivedEnvironment<Value> where Value: ComposableEnvironment 
   var didSetAliases: Bool = false
 
   /// See ``DerivedEnvironment`` discussion
-  public init(wrappedValue: Value, aliases: ((inout AliasBuilder<Value>) -> Void)? = nil) {
+  public init(wrappedValue: Value, aliases: ((AliasBuilder<Value>) -> AliasBuilder<Value>)? = nil) {
     self.environment = wrappedValue
-    self.aliasBuilder = Self.aliasBuilder(aliases)
+    self.aliasBuilder = aliases.map { $0(.init()) }
   }
 
   /// See ``DerivedEnvironment`` discussion
-  public init(aliases: ((inout AliasBuilder<Value>) -> Void)? = nil) {
+  public init(aliases: ((AliasBuilder<Value>) -> AliasBuilder<Value>)? = nil) {
     self.environment = Value()
-    self.aliasBuilder = Self.aliasBuilder(aliases)
-  }
-
-  static func aliasBuilder(_ aliases: ((inout AliasBuilder<Value>) -> Void)?)
-    -> AliasBuilder<Value>? {
-    guard let aliases = aliases else {
-      return nil
-    }
-    var aliasBuilder = AliasBuilder<Value>()
-    aliases(&aliasBuilder)
-    return aliasBuilder
+    self.aliasBuilder = aliases.map { $0(.init()) }
   }
 
   @available(*, unavailable,

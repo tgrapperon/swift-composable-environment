@@ -2,15 +2,17 @@ import ComposableArchitecture
 
 public extension Reducer where Environment: ComposableEnvironment {
   /// Transforms a reducer that works on local state, action, and environment into one that works on
-  /// global state, action and environment when the local environment is a subclass of ``ComposableEnvironment``.
+  /// global state, action and environment when the local environment is a subclass of
+  /// ``ComposableEnvironment``.
   /// It accomplishes this by providing 2 transformations to the method:
   ///
   ///   * A writable key path that can get/set a piece of local state from the global state.
   ///   * A case path that can extract/embed a local action into a global action.
   ///
-  /// Because the environment is ``ComposableEnvironment``, its lifecycle is automatically managed by the library.
-  /// For more information about this reducer, see the discussion about the equivalent function using
-  /// unbounded environments in `swift-composable-architecture`.
+  /// Because the environment is ``ComposableEnvironment``, its lifecycle is automatically managed
+  /// by the library.
+  /// For more information about this reducer, see the discussion about the equivalent function
+  /// using unbounded environments in `swift-composable-architecture`.
   ///
   /// - Parameters:
   ///   - toLocalState: A key path that can get/set `State` inside `GlobalState`.
@@ -30,7 +32,8 @@ public extension Reducer where Environment: ComposableEnvironment {
   }
 
   /// Transforms a reducer that works on local state, action, and environment into one that works on
-  /// global state, action and environmentwhen the local environment is a subclass of ``ComposableEnvironment``.
+  /// global state, action and environmentwhen the local environment is a subclass of
+  /// ``ComposableEnvironment``.
   ///
   /// It accomplishes this by providing 2 transformations to the method:
   ///
@@ -38,9 +41,10 @@ public extension Reducer where Environment: ComposableEnvironment {
   ///     typically an enum.
   ///   * A case path that can extract/embed a local action into a global action.
   ///
-  /// Because the environment is ``ComposableEnvironment``, its lifecycle is automatically managed by the library.
-  /// For more information about this reducer, see the discussion about the equivalent function using
-  /// unbounded environments in `swift-composable-architecture`.
+  /// Because the environment is ``ComposableEnvironment``, its lifecycle is automatically managed
+  /// by the library.
+  /// For more information about this reducer, see the discussion about the equivalent function
+  /// using unbounded environments in `swift-composable-architecture`.
   ///
   /// - Parameters:
   ///   - toLocalState: A case path that can extract/embed `State` from `GlobalState`.
@@ -64,11 +68,11 @@ public extension Reducer where Environment: ComposableEnvironment {
   }
 
   /// A version of ``pullback(state:action)`` that transforms a reducer that works on
-  /// an element into one that works on an identified array of elements, when the local environment is  a subclass
-  /// of``ComposableEnvironment``.
+  /// an element into one that works on an identified array of elements, when the local environment
+  /// is  a subclass of``ComposableEnvironment``.
   ///
-  /// For more information about this reducer, see the discussion about the equivalent function using
-  /// unbounded environments in `swift-composable-architecture`.
+  /// For more information about this reducer, see the discussion about the equivalent function
+  /// using unbounded environments in `swift-composable-architecture`.
   ///
   /// - Parameters:
   ///   - toLocalState: A key path that can get/set a collection of `State` elements inside
@@ -98,11 +102,11 @@ public extension Reducer where Environment: ComposableEnvironment {
   }
   
   /// A version of ``pullback(state:action:environment:)`` that transforms a reducer that works on
-  /// an element into one that works on a dictionary of element values, when the local environment is a subclass
-  /// of``ComposableEnvironment``.
+  /// an element into one that works on a dictionary of element values, when the local environment
+  /// is a subclass of``ComposableEnvironment``.
   ///
-  /// For more information about this reducer, see the discussion about the equivalent function using
-  /// unbounded environments in `swift-composable-architecture`.
+  /// For more information about this reducer, see the discussion about the equivalent function
+  /// using unbounded environments in `swift-composable-architecture`.
   ///
   /// - Parameters:
   ///   - toLocalState: A key path that can get/set a dictionary of `State` values inside

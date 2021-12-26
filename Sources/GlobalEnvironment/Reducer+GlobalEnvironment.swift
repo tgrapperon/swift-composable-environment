@@ -8,9 +8,10 @@ public extension Reducer where Environment: GlobalEnvironment {
   ///   * A writable key path that can get/set a piece of local state from the global state.
   ///   * A case path that can extract/embed a local action into a global action.
   ///
-  /// Because the environment is ``GlobalEnvironment``, its lifecycle is automatically managed by the library.
-  /// For more information about this reducer, see the discussion about the equivalent function using
-  /// unbounded environments in `swift-composable-architecture`.
+  /// Because the environment is ``GlobalEnvironment``, its lifecycle is automatically managed by
+  /// the library.
+  /// For more information about this reducer, see the discussion about the equivalent function
+  /// using unbounded environments in `swift-composable-architecture`.
   ///
   /// - Parameters:
   ///   - toLocalState: A key path that can get/set `State` inside `GlobalState`.
@@ -37,7 +38,8 @@ public extension Reducer where Environment: GlobalEnvironment {
   ///     typically an enum.
   ///   * A case path that can extract/embed a local action into a global action.
   ///
-  /// Because the environment is ``GlobalEnvironment``, its lifecycle is automatically managed by the library.
+  /// Because the environment is ``GlobalEnvironment``, its lifecycle is automatically managed by
+  /// the library.
   /// For more information about this reducer, see the discussion about the equivalent function using
   /// unbounded environments in `swift-composable-architecture`.
   ///
@@ -62,10 +64,11 @@ public extension Reducer where Environment: GlobalEnvironment {
   }
 
   /// A version of ``pullback(state:action)`` that transforms a reducer that works on
-  /// an element into one that works on an identified array of elements, when the local environment is some ``GlobalEnvironment``.
+  /// an element into one that works on an identified array of elements, when the local environment
+  /// is some ``GlobalEnvironment``.
   ///
-  /// For more information about this reducer, see the discussion about the equivalent function using
-  /// unbounded environments in `swift-composable-architecture`.
+  /// For more information about this reducer, see the discussion about the equivalent function
+  /// using unbounded environments in `swift-composable-architecture`.
   ///
   /// - Parameters:
   ///   - toLocalState: A key path that can get/set a collection of `State` elements inside
@@ -94,11 +97,11 @@ public extension Reducer where Environment: GlobalEnvironment {
   }
 
   /// A version of ``pullback(state:action:environment:)`` that transforms a reducer that works on
-  /// an element into one that works on a dictionary of element values, when the local environment is some
-  /// ``GlobalEnvironment``.
+  /// an element into one that works on a dictionary of element values, when the local environment
+  /// is some ``GlobalEnvironment``.
   ///
-  /// For more information about this reducer, see the discussion about the equivalent function using
-  /// unbounded environments in `swift-composable-architecture`.
+  /// For more information about this reducer, see the discussion about the equivalent function
+  /// using unbounded environments in `swift-composable-architecture`.
   ///
   /// - Parameters:
   ///   - toLocalState: A key path that can get/set a dictionary of `State` values inside

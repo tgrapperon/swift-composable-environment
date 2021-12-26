@@ -5,14 +5,37 @@ fileprivate struct IntKey: DependencyKey {
   static var defaultValue: Int { 1 }
 }
 
+fileprivate struct Int1Key: DependencyKey {
+  static var defaultValue: Int { -1 }
+}
+
+fileprivate struct Int2Key: DependencyKey {
+  static var defaultValue: Int { -10 }
+}
+
 fileprivate extension Dependencies {
   var int: Int {
     get { self[IntKey.self] }
     set { self[IntKey.self] = newValue }
   }
+  
+  var int1: Int {
+    get { self[Int1Key.self] }
+    set { self[Int1Key.self] = newValue }
+  }
+  
+  var int2: Int {
+    get { self[Int2Key.self] }
+    set { self[Int2Key.self] = newValue }
+  }
 }
 
 final class ComposableEnvironmentTests: XCTestCase {
+  override func setUp() {
+    super.setUp()
+    Dependencies.clearAliases()
+  }
+  
   func testDependency() {
     class Env: ComposableEnvironment {
       @Dependency(\.int) var int
@@ -149,4 +172,53 @@ final class ComposableEnvironmentTests: XCTestCase {
     XCTAssertEqual(parent.c1.c2.c3.int, 8)
     XCTAssertEqual(parent.c1.c2.c3.c4.c5.int, 8)
   }
+  
+  func testDependencyAliasing() {
+    class Parent: ComposableEnvironment {
+      @Dependency(\.int) var int
+    }
+    let parent = Parent()
+      .aliasing(\.int1, to: \.int)
+      .aliasing(\.int2, to: \.int1)
+    XCTAssertEqual(parent.int, 1)
+    XCTAssertEqual(parent.with(\.int2, 4).int, 4)
+    XCTAssertEqual(parent.int1, 4)
+  }
+  
+  func testDependencyAliasingViaPropertyWrapper() {
+    class Parent: ComposableEnvironment {
+      @Dependency(\.int) var int
+      @DerivedEnvironment<Child>(aliases: { $0.alias(\.int1, to: \.int) }) var c1
+    }
+    final class Child: ComposableEnvironment {
+      @Dependency(\.int1) var otherInt
+    }
+    let parent = Parent()
+    XCTAssertEqual(parent.c1.int1, 1)
+    XCTAssertEqual(parent.with(\.int, 4).c1.int1, 4)
+  }
+  
+//  func testDependencyAliases() {
+//    var dep = DependencyAliases()
+//    dep.alias(dependency: \Dependencies.int1, to: \Dependencies.int)
+//    dep.alias(dependency: \Dependencies.int2, to: \Dependencies.int1)
+//    XCTAssertEqual(dep.canonicalAlias(for: \Dependencies.int), \.int)
+//    XCTAssertEqual(dep.canonicalAlias(for: \Dependencies.int1), \.int)
+//    XCTAssertEqual(dep.canonicalAlias(for: \Dependencies.int2), \.int)
+//
+//
+//
+//    dep.aliases.removeAll()
+//    dep.alias(dependency: \Dependencies.int, to: \Dependencies.int1)
+//    dep.alias(dependency: \Dependencies.int1, to: \Dependencies.int2)
+//    XCTAssertEqual(dep.canonicalAlias(for: \Dependencies.int), \.int2)
+//    XCTAssertEqual(dep.canonicalAlias(for: \Dependencies.int1), \.int2)
+//    XCTAssertEqual(dep.canonicalAlias(for: \Dependencies.int2), \.int2)
+//
+//    XCTAssertEqual(dep.preimage(for: \Dependencies.int), [\.int1, \.int2, \.int])
+//    XCTAssertEqual(dep.preimage(for: \Dependencies.int1), [\.int1, \.int2, \.int])
+//    XCTAssertEqual(dep.preimage(for: \Dependencies.int2), [\.int1, \.int2, \.int])
+//
+//    XCTAssertEqual(dep.preimage(for: \Dependencies.int).count, 3)
+//  }
 }
