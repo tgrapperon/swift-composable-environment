@@ -101,7 +101,7 @@ You still have access to environment-less pullbacks, with the same API:
 ```swift
 childReducer.pullback(state: \.child, action: /ParentAction.child)
 ```
-The only requirement for `GlobalEnvironment` is to provide an `init()` initializer. If this is not possible for your child environment, you can still implement the `GlobalDependenciesAccessing` marker protocol which has no requirements but gives your type access to global dependencies using the implicit subscript accessors. You can also do nothing and use the `@Dependency` which has no restriction over its host like the `ComposableEnvironment` version has (it needs to be installed in a `ComposableEnvironement` subclass).
+The only requirement for `GlobalEnvironment` is to provide an `init()` initializer. If this is not possible for your child environment, you can still implement the `GlobalDependenciesAccessing` marker protocol which has no requirements but gives your type access to global dependencies using the implicit subscript accessors. You can also do nothing and use the `@Dependency` which has no restriction over its host like the `ComposableEnvironment` version has (it needs to be installed in a `ComposableEnvironment` subclass).
 If you can't conform to `GlobalEnvironment`, you only lose access to the environment-less pullbacks.
 
 ## Assigning values to dependencies
