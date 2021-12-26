@@ -173,9 +173,9 @@ In order to ease its learning curve, the library bases its API on SwiftUI's Envi
 |`EnvironmentKey`|`DependencyKey`| Identify a shared value |
 |`EnvironmentValues`|`Dependencies`| Expose a shared value |
 |`@Environment`|`@Dependency`| Retrieve a shared value |
-|`View`|`(Composable|Global)Environment`| A node |
+|`View`|`(Composable/Global)Environment`| A node |
 |`View.body`| `@DerivedEnvironment`'s | A list of children of the node |
-|`View.environment(keyPath:value:)`|`(Composable|Global)Environment.with(keyPath:value:)`| Set a shared value for a node and its children |
+|`View.environment(keyPath:value:)`|`(Composable/Global)Environment.with(keyPath:value:)`| Set a shared value for a node and its children |
 
 ## Documentation
 The latest documentation for ComposableEnvironment's APIs is available [here](https://github.com/tgrapperon/swift-composable-environment/wiki/ComposableEnvironment-Documentation).
