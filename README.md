@@ -188,5 +188,7 @@ Add
 to your Package dependencies in `Package.swift`, and then
 ```swift
 .product(name: "ComposableEnvironment", package: "swift-composable-environment")
+// or
+.product(name: "GlobalEnvironment", package: "swift-composable-environment")
 ```
-to your target's dependencies.
+to your target's dependencies, depending on the module you want to use.
