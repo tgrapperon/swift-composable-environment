@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "ComposableEnvironment"
-               BuildableName = "ComposableEnvironment"
-               BlueprintName = "ComposableEnvironment"
+               BlueprintIdentifier = "GlobalEnvironment"
+               BuildableName = "GlobalEnvironment"
+               BlueprintName = "GlobalEnvironment"
                ReferencedContainer = "container:">
             </BuildableReference>
          </BuildActionEntry>
@@ -32,9 +32,9 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "ComposableEnvironmentTests"
-               BuildableName = "ComposableEnvironmentTests"
-               BlueprintName = "ComposableEnvironmentTests"
+               BlueprintIdentifier = "GlobalEnvironmentTests"
+               BuildableName = "GlobalEnvironmentTests"
+               BlueprintName = "GlobalEnvironmentTests"
                ReferencedContainer = "container:">
             </BuildableReference>
          </TestableReference>
@@ -60,9 +60,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "ComposableEnvironment"
-            BuildableName = "ComposableEnvironment"
-            BlueprintName = "ComposableEnvironment"
+            BlueprintIdentifier = "GlobalEnvironment"
+            BuildableName = "GlobalEnvironment"
+            BlueprintName = "GlobalEnvironment"
             ReferencedContainer = "container:">
          </BuildableReference>
       </MacroExpansion>

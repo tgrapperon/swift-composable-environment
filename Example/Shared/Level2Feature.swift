@@ -13,8 +13,8 @@ private struct RNGKey: DependencyKey {
   }
 }
 
-// Install it in `ComposableDependencies`:
-public extension ComposableDependencies {
+// Install it in `Dependencies`:
+public extension Dependencies {
   var rng: RandomNumberGenerator {
     get { self[RNGKey.self] }
     set { self[RNGKey.self] = newValue }

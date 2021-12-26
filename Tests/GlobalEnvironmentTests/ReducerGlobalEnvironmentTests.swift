@@ -1,4 +1,4 @@
-@testable import ComposableEnvironment
+@testable import GlobalEnvironment
 import ComposableArchitecture
 import XCTest
 
@@ -19,13 +19,13 @@ final class ReducerAdditionsTests: XCTestCase {
       case action
     }
 
-    class First: ComposableEnvironment {}
-    class Second: ComposableEnvironment {}
-    class Third: ComposableEnvironment {}
+    struct First: GlobalEnvironment {}
+    struct Second: GlobalEnvironment {}
+    struct Third: GlobalEnvironment {}
 
     let thirdReducer = Reducer<Int, Action, Third> {
       state, _, environment in
-      state = environment.int
+      state = environment[\.int]
       return .none
     }
 
@@ -55,13 +55,13 @@ final class ReducerAdditionsTests: XCTestCase {
       case action
     }
 
-    class First: ComposableEnvironment {}
-    class Second: ComposableEnvironment {}
-    class Third: ComposableEnvironment {}
+    struct First: GlobalEnvironment {}
+    struct Second: GlobalEnvironment {}
+    struct Third: GlobalEnvironment {}
 
     let thirdReducer = Reducer<State, Action, Third> {
       state, _, environment in
-      state = .int(environment.int)
+      state = .int(environment[\.int])
       return .none
     }
 
@@ -88,9 +88,9 @@ final class ReducerAdditionsTests: XCTestCase {
       case action
     }
 
-    class First: ComposableEnvironment {}
-    class Second: ComposableEnvironment {}
-    class Third: ComposableEnvironment {}
+    struct First: GlobalEnvironment {}
+    struct Second: GlobalEnvironment {}
+    struct Third: GlobalEnvironment {}
 
     struct Value: Identifiable, Equatable {
       var id: String
@@ -100,7 +100,7 @@ final class ReducerAdditionsTests: XCTestCase {
     let thirdReducer = Reducer<IdentifiedArrayOf<Value>, Action, Third> {
       state, _, environment in
       for index in state.indices {
-        state.update(.init(id: state[index].id, int: environment.int), at: index)
+        state.update(.init(id: state[index].id, int: environment[\.int]), at: index)
       }
       return .none
     }
@@ -135,14 +135,14 @@ final class ReducerAdditionsTests: XCTestCase {
     enum Action {
       case action
     }
-    class First: ComposableEnvironment {}
-    class Second: ComposableEnvironment {}
-    class Third: ComposableEnvironment {}
+    struct First: GlobalEnvironment {}
+    struct Second: GlobalEnvironment {}
+    struct Third: GlobalEnvironment {}
 
     let thirdReducer = Reducer<[String: Int], Action, Third> {
       state, _, environment in
       for key in state.keys {
-        state[key] = environment.int
+        state[key] = environment[\.int]
       }
       return .none
     }
@@ -171,77 +171,5 @@ final class ReducerAdditionsTests: XCTestCase {
         "B": 2,
       ]
     }
-  }
-  
-  func testComposableAutoComposableComposableBridging() {
-    class Third: ComposableEnvironment {
-      @Dependency(\.int) var integer
-    }
-    class Second: ComposableEnvironment {
-      @DerivedEnvironment<Third> var third
-    }
-    class First: ComposableEnvironment {}
-    
-    enum Action {
-      case action
-    }
-
-    let thirdReducer = Reducer<Int, Action, Third> {
-      state, _, environment in
-      state = environment.integer
-      return .none
-    }
-
-    let secondReducer = Reducer<Int, Action, Second>.combine(
-      thirdReducer.pullback(state: \.self, action: /.self, environment: \.third)
-    )
-
-    let firstReducer = Reducer<Int, Action, First>.combine(
-      secondReducer.pullback(state: \.self, action: /.self)
-    )
-
-    let store = TestStore(
-      initialState: 0,
-      reducer: firstReducer,
-      environment: First() // Swift 5.4+ can use .init()
-        .with(\.int, 2)
-    )
-
-    store.send(.action) { $0 = 2 }
-  }
-  
-  func testAutoComposableComposableAutoComposableBridging() {
-    class Third: ComposableEnvironment { }
-    class Second: ComposableEnvironment { }
-    class First: ComposableEnvironment {
-      @DerivedEnvironment<Second> var second
-    }
-    
-    enum Action {
-      case action
-    }
-
-    let thirdReducer = Reducer<Int, Action, Third> {
-      state, _, environment in
-      state = environment.int
-      return .none
-    }
-
-    let secondReducer = Reducer<Int, Action, Second>.combine(
-      thirdReducer.pullback(state: \.self, action: /.self)
-    )
-
-    let firstReducer = Reducer<Int, Action, First>.combine(
-      secondReducer.pullback(state: \.self, action: /.self, environment: \.second)
-    )
-
-    let store = TestStore(
-      initialState: 0,
-      reducer: firstReducer,
-      environment: First() // Swift ≥ 5.4 can use .init()
-        .with(\.int, 2)
-    )
-    
-    store.send(.action) { $0 = 2 }
   }
 }

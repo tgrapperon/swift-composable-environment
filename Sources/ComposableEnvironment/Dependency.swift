@@ -1,13 +1,13 @@
 /// Use this property wrapper to declare depencies in a ``ComposableEnvironment`` subclass.
 ///
-/// You reference the dependency by its `KeyPath` originating from  ``ComposableDependencies``, and
+/// You reference the dependency by its `KeyPath` originating from  `Dependencies`, and
 /// you declare its name in the local environment. The dependency should not be instantiated, as it
 /// is either inherited from a ``ComposableEnvironment`` parent, or installed with
 /// ``ComposableEnvironment/with(_:_:)``.
 ///
 /// For example, if the dependency is declared as:
 /// ```swift
-/// extension ComposableDependencies {
+/// extension Dependencies {
 ///   var uuidGenerator: () -> UUID {
 ///     get { self[UUIDGeneratorKey.self] }
 ///     set { self[UUIDGeneratorKey.self] = newValue }
@@ -33,7 +33,7 @@ public struct Dependency<Value> {
     get {
       let wrapper = instance[keyPath: storageKeyPath]
       let keyPath = wrapper.keyPath
-      let value = instance.dependencies[keyPath: keyPath]
+      let value = instance[keyPath]
       return value
     }
     set {
@@ -41,11 +41,20 @@ public struct Dependency<Value> {
     }
   }
 
-  var keyPath: KeyPath<ComposableDependencies, Value>
+  var keyPath: WritableKeyPath<Dependencies, Value>
 
   /// See ``Dependency`` discussion
-  public init(_ keyPath: KeyPath<ComposableDependencies, Value>) {
+  public init(_ keyPath: WritableKeyPath<Dependencies, Value>) {
     self.keyPath = keyPath
+  }
+  
+  @available(*, unavailable, message: """
+  @Dependency should be used in conjunction with a `WritableKeyPath`. Please implement a setter
+  part in the `Dependencies`'s computed property for this dependency.
+  """
+  )
+  public init(_ keyPath: KeyPath<Dependencies, Value>) {
+    fatalError()
   }
   
   @available(*, unavailable, message: "@Dependency should be used in a ComposableEnvironment class.")

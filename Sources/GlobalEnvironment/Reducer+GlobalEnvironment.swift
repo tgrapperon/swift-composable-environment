@@ -1,16 +1,15 @@
 import ComposableArchitecture
 
-public extension Reducer where Environment: ComposableEnvironment {
+public extension Reducer where Environment: GlobalEnvironment {
   /// Transforms a reducer that works on local state, action, and environment into one that works on
-  /// global state, action and environment when the local environment is a subclass of
-  /// ``ComposableEnvironment``.
+  /// global state, action and environment when the local environment is some ``GlobalEnvironment``.
   /// It accomplishes this by providing 2 transformations to the method:
   ///
   ///   * A writable key path that can get/set a piece of local state from the global state.
   ///   * A case path that can extract/embed a local action into a global action.
   ///
-  /// Because the environment is ``ComposableEnvironment``, its lifecycle is automatically managed
-  /// by the library.
+  /// Because the environment is ``GlobalEnvironment``, its lifecycle is automatically managed by
+  /// the library.
   /// For more information about this reducer, see the discussion about the equivalent function
   /// using unbounded environments in `swift-composable-architecture`.
   ///
@@ -21,19 +20,17 @@ public extension Reducer where Environment: ComposableEnvironment {
   func pullback<GlobalState, GlobalAction, GlobalEnvironment>(
     state toLocalState: WritableKeyPath<GlobalState, State>,
     action toLocalAction: CasePath<GlobalAction, Action>
-  ) -> Reducer<GlobalState, GlobalAction, GlobalEnvironment>
-  where GlobalEnvironment: ComposableEnvironment {
+  ) -> Reducer<GlobalState, GlobalAction, GlobalEnvironment> {
     let local = Environment()
     return pullback(
       state: toLocalState,
       action: toLocalAction,
-      environment: local.updatingFromParentIfNeeded
+      environment: { _ in local }
     )
   }
 
   /// Transforms a reducer that works on local state, action, and environment into one that works on
-  /// global state, action and environmentwhen the local environment is a subclass of
-  /// ``ComposableEnvironment``.
+  /// global state, action and environmentwhen the local environment is  a ``GlobalEnvironment``.
   ///
   /// It accomplishes this by providing 2 transformations to the method:
   ///
@@ -41,10 +38,10 @@ public extension Reducer where Environment: ComposableEnvironment {
   ///     typically an enum.
   ///   * A case path that can extract/embed a local action into a global action.
   ///
-  /// Because the environment is ``ComposableEnvironment``, its lifecycle is automatically managed
-  /// by the library.
-  /// For more information about this reducer, see the discussion about the equivalent function
-  /// using unbounded environments in `swift-composable-architecture`.
+  /// Because the environment is ``GlobalEnvironment``, its lifecycle is automatically managed by
+  /// the library.
+  /// For more information about this reducer, see the discussion about the equivalent function using
+  /// unbounded environments in `swift-composable-architecture`.
   ///
   /// - Parameters:
   ///   - toLocalState: A case path that can extract/embed `State` from `GlobalState`.
@@ -56,20 +53,19 @@ public extension Reducer where Environment: ComposableEnvironment {
     breakpointOnNil: Bool = true,
     _ file: StaticString = #file,
     _ line: UInt = #line
-  ) -> Reducer<GlobalState, GlobalAction, GlobalEnvironment>
-  where GlobalEnvironment: ComposableEnvironment {
+  ) -> Reducer<GlobalState, GlobalAction, GlobalEnvironment> {
     let local = Environment()
     return pullback(
       state: toLocalState,
       action: toLocalAction,
-      environment: local.updatingFromParentIfNeeded,
+      environment: { _ in local },
       breakpointOnNil: breakpointOnNil
     )
   }
 
   /// A version of ``pullback(state:action)`` that transforms a reducer that works on
   /// an element into one that works on an identified array of elements, when the local environment
-  /// is  a subclass of``ComposableEnvironment``.
+  /// is some ``GlobalEnvironment``.
   ///
   /// For more information about this reducer, see the discussion about the equivalent function
   /// using unbounded environments in `swift-composable-architecture`.
@@ -90,20 +86,19 @@ public extension Reducer where Environment: ComposableEnvironment {
     breakpointOnNil: Bool = true,
     _ file: StaticString = #file,
     _ line: UInt = #line
-  ) -> Reducer<GlobalState, GlobalAction, GlobalEnvironment>
-  where GlobalEnvironment: ComposableEnvironment {
+  ) -> Reducer<GlobalState, GlobalAction, GlobalEnvironment> {
     let local = Environment()
     return forEach(
       state: toLocalState,
       action: toLocalAction,
-      environment: local.updatingFromParentIfNeeded,
+      environment: { _ in local },
       breakpointOnNil: breakpointOnNil
     )
   }
-  
+
   /// A version of ``pullback(state:action:environment:)`` that transforms a reducer that works on
   /// an element into one that works on a dictionary of element values, when the local environment
-  /// is a subclass of``ComposableEnvironment``.
+  /// is some ``GlobalEnvironment``.
   ///
   /// For more information about this reducer, see the discussion about the equivalent function
   /// using unbounded environments in `swift-composable-architecture`.
@@ -123,13 +118,12 @@ public extension Reducer where Environment: ComposableEnvironment {
     breakpointOnNil: Bool = true,
     _ file: StaticString = #file,
     _ line: UInt = #line
-  ) -> Reducer<GlobalState, GlobalAction, GlobalEnvironment>
-  where GlobalEnvironment: ComposableEnvironment {
+  ) -> Reducer<GlobalState, GlobalAction, GlobalEnvironment> {
     let local = Environment()
     return forEach(
       state: toLocalState,
       action: toLocalAction,
-      environment: local.updatingFromParentIfNeeded,
+      environment: { _ in local },
       breakpointOnNil: breakpointOnNil
     )
   }
