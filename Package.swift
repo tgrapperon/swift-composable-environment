@@ -2,6 +2,17 @@
 
 import PackageDescription
 
+/// Because some code is shared between `ComposableEnvironment` and `GlobalEnvironment`, and in
+/// order to expose only the minimum API surface, the package is split in several targets.
+///
+/// The third product called `ComposableDependencies` can be used in case you want to define
+/// dependencies in an environment-agnostic way. Such dependencies can then be imported and used by
+/// `ComposableEnvironment` or `GlobalEnvironment`.
+///
+/// Targets with names starting with a underscore are used for implementation only and their types
+/// exported on a case by case basis. They should not be imported as a whole without prefixing the
+/// import with the `@_implementationOnly` keyword.
+
 let package = Package(
   name: "swift-composable-environment",
   platforms: [
@@ -12,6 +23,10 @@ let package = Package(
   ],
   products: [
     .library(
+      name: "ComposableDependencies",
+      targets: ["ComposableDependencies"]
+    ),
+    .library(
       name: "ComposableEnvironment",
       targets: ["ComposableEnvironment"]
     ),
@@ -19,15 +34,16 @@ let package = Package(
       name: "GlobalEnvironment",
       targets: ["GlobalEnvironment"]
     ),
-    .library(
-      name: "ComposableDependencies",
-      targets: ["ComposableDependencies"]
-    )
   ],
   dependencies: [
     .package(url: "https://github.com/pointfreeco/swift-composable-architecture", from: "0.21.0"),
   ],
   targets: [
+    .target(
+      name: "ComposableDependencies",
+      dependencies: ["_Dependencies"]
+    ),
+
     .target(
       name: "ComposableEnvironment",
       dependencies: [
@@ -41,26 +57,18 @@ let package = Package(
       name: "ComposableEnvironmentTests",
       dependencies: ["ComposableEnvironment"]
     ),
-    .target(
-      name: "ComposableDependencies",
-      dependencies: [
-        "_Dependencies"
-      ]
-    ),
-    .target(
-      name: "_Dependencies",
-      dependencies: []
-    ),
+
+    .target(name: "_Dependencies"),
+
     .target(
       name: "_DependencyAliases",
-      dependencies: [
-        "ComposableDependencies",
-      ]
+      dependencies: ["ComposableDependencies"]
     ),
     .testTarget(
       name: "DependencyAliasesTests",
       dependencies: ["_DependencyAliases"]
     ),
+
     .target(
       name: "GlobalEnvironment",
       dependencies: [
@@ -72,9 +80,7 @@ let package = Package(
     ),
     .testTarget(
       name: "GlobalEnvironmentTests",
-      dependencies: [
-        "GlobalEnvironment",
-      ]
+      dependencies: ["GlobalEnvironment"]
     ),
   ]
 )
