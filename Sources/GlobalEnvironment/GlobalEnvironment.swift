@@ -1,8 +1,9 @@
+@_exported import ComposableDependencies
 @_implementationOnly import _DependencyAliases
-import _Dependencies
+@_implementationOnly  import _Dependencies
 
 extension Dependencies {
-  static var global: Dependencies = _createDependencies()
+  static var global: Dependencies = DependenciesUtilities.new()
   static var aliases = DependencyAliases()
 }
 
@@ -134,5 +135,22 @@ public extension Dependencies {
   /// ```
   static func clearAliases() {
     Self.aliases.clear()
+  }
+}
+
+public extension Dependencies {
+  /// Use this static method to reset all global depedencies to their default values.
+  /// You typically call this method during the `setUp()` method of some `XCTestCase` subclass:
+  /// ```swift
+  /// class SomeFeatureTests: XCTextCase {
+  ///   override func setUp() {
+  ///     super.setUp()
+  ///     Dependencies.reset()
+  ///   }
+  ///   // …
+  /// }
+  /// ```
+  static func reset() {
+    Dependencies.global = DependenciesUtilities.new()
   }
 }
