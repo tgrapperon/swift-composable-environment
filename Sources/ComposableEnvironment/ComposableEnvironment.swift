@@ -1,5 +1,5 @@
-@_exported import Dependencies
-@_implementationOnly import DependencyAliases
+@_implementationOnly import _DependencyAliases
+import _Dependencies
 import Foundation
 
 /// The base class of your environments.
@@ -39,7 +39,7 @@ open class ComposableEnvironment {
   /// well as their own children ``DerivedEnvironment``.
   public required init() {}
 
-  var dependencies: Dependencies = ._new() {
+  var dependencies: Dependencies = _createDependencies() {
     didSet {
       // This will make any child refetch its upstream dependencies when accessed.
       upToDateDerivedEnvironments.removeAllObjects()
@@ -54,7 +54,7 @@ open class ComposableEnvironment {
     if !parent.upToDateDerivedEnvironments.contains(self) {
       // The following line updates the `environment`'s dependencies, invalidating its children
       // dependencies when it mutates its own `dependencies` property as a side effect.
-      dependencies._mergeFromUpstream(parent.dependencies)
+      _merge(parent.dependencies, to: &dependencies)
       parent.upToDateDerivedEnvironments.add(self)
     }
     return self
@@ -105,8 +105,11 @@ open class ComposableEnvironment {
   /// - Remark: This direct access can't be used to set a dependency, as it will try to go through
   /// the setter part of a ``Dependency`` property wrapper, which is not allowed yet. You can use
   ///  ``with(_:_:)`` or ``subscript(_:)`` instead.
-  public subscript<Value>(dynamicMember keyPath: KeyPath<Dependencies, Value>)
-    -> Value { dependencies[keyPath: Self.aliases.standardAlias(for: keyPath)] }
+  public subscript<Value>(
+    dynamicMember keyPath: KeyPath<Dependencies, Value>
+  ) -> Value {
+    dependencies[keyPath: Self.aliases.standardAlias(for: keyPath)]
+  }
 
   /// Identify a dependency to another one.
   ///

@@ -1,4 +1,4 @@
-@testable import DependencyAliases
+@testable import _DependencyAliases
 import XCTest
 
 fileprivate struct Dependencies {

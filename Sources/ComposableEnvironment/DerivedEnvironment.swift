@@ -1,3 +1,5 @@
+import ComposableDependencies
+
 /// Use this property wrapper to declare child ``ComposableEnvironment`` in a
 /// ``ComposableEnvironment`` subclass.
 ///
@@ -89,8 +91,10 @@ public struct AliasBuilder<Environment> where Environment: ComposableEnvironment
   /// - Parameters:
   ///   - dependency: The `KeyPath` of the aliased dependency in `Dependencies`
   ///   - to: A `KeyPath` of another dependency in `Dependencies` that serves as a reference value.
-  public func alias<Dependency>(_ dependency: WritableKeyPath<Dependencies, Dependency>,
-                                to default: WritableKeyPath<Dependencies, Dependency>) -> Self {
+  public func alias<Dependency>(
+    _ dependency: WritableKeyPath<Dependencies, Dependency>,
+    to default: WritableKeyPath<Dependencies, Dependency>
+  ) -> Self {
     AliasBuilder {
       transforming($0)
         .aliasing(dependency, to: `default`)

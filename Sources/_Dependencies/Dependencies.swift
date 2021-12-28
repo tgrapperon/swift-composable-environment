@@ -16,7 +16,7 @@
 public struct Dependencies {
   /// This wrapper enum allows to distinguish dependencies that where defined explicitely for a
   /// given environment from dependencies that were inherited from their parent environment.
-  enum DependencyValue {
+  fileprivate enum DependencyValue {
     case defined(Any)
     case inherited(Any)
 
@@ -42,26 +42,24 @@ public struct Dependencies {
     }
   }
 
-  private var values = [ObjectIdentifier: DependencyValue]()
+  fileprivate var values = [ObjectIdentifier: DependencyValue]()
 
   public subscript<T>(_ key: T.Type) -> T.Value where T: DependencyKey {
     get { values[ObjectIdentifier(key)]?.value as? T.Value ?? key.defaultValue }
     set { values[ObjectIdentifier(key)] = .defined(newValue) }
   }
+}
 
-  /// - Warning: This method is public for implementation reasons. You shouldn't have to call it
-  /// when using the library.
-  public mutating func _mergeFromUpstream(_ upstreamDependencies: Dependencies) {
-    // We should preserve dependencies that were defined explicitely.
-    for (key, value) in upstreamDependencies.values {
-      guard values[key]?.isDefined != true else { continue }
-      values[key] = value.inherit()
-    }
-  }
+/// - Warning: This method is public for implementation reasons. You shouldn't have to call it
+/// when using the library.
+public func _createDependencies() -> Dependencies { .init() }
 
-  /// - Warning: This function is public for implementation reasons. You shouldn't have to call it
-  /// when using the library.
-  public static func _new() -> Self {
-    .init()
+/// - Warning: This method is public for implementation reasons. You shouldn't have to call it
+/// when using the library.
+public func _merge(_ upstream: Dependencies, to dependencies: inout Dependencies) {
+  // We should preserve dependencies that were defined explicitely.
+  for (key, value) in upstream.values {
+    guard dependencies.values[key]?.isDefined != true else { continue }
+    dependencies.values[key] = value.inherit()
   }
 }

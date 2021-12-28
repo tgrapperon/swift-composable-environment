@@ -1,4 +1,5 @@
 @testable import GlobalEnvironment
+import ComposableDependencies
 import ComposableArchitecture
 import XCTest
 
