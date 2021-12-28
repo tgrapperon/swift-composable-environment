@@ -19,6 +19,10 @@ let package = Package(
       name: "GlobalEnvironment",
       targets: ["GlobalEnvironment"]
     ),
+    .library(
+      name: "EnvironmentalDependencies",
+      targets: ["Dependencies"]
+    )
   ],
   dependencies: [
     .package(url: "https://github.com/pointfreeco/swift-composable-architecture", from: "0.21.0"),
