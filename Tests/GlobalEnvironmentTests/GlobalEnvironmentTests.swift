@@ -1,4 +1,5 @@
 @testable import GlobalEnvironment
+import _Dependencies
 import XCTest
 
 fileprivate struct IntKey: DependencyKey {
@@ -33,7 +34,7 @@ fileprivate extension Dependencies {
 final class GlobalEnvironmentTests: XCTestCase {
   override func setUp() {
     super.setUp()
-    Dependencies.global = ._new()
+    Dependencies.global = _createDependencies()
     Dependencies.clearAliases()
   }
 

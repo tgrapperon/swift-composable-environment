@@ -1,7 +1,8 @@
-@_exported import Dependencies
-@_implementationOnly import DependencyAliases
+@_implementationOnly import _DependencyAliases
+import _Dependencies
+
 extension Dependencies {
-  static var global: Dependencies = ._new()
+  static var global: Dependencies = _createDependencies()
   static var aliases = DependencyAliases()
 }
 
@@ -67,8 +68,11 @@ public extension GlobalDependenciesAccessing {
   /// - Remark: This direct access can't be used to set a dependency, as it will try to go through
   /// the setter part of a `Dependency` property wrapper, which is not allowed yet. You can use
   ///  ``with(_:_:)`` or ``subscript(_:)`` instead.
-  subscript<Value>(dynamicMember keyPath: KeyPath<Dependencies, Value>)
-    -> Value { Dependencies.global[keyPath: Dependencies.aliases.standardAlias(for: keyPath)] }
+  subscript<Value>(
+    dynamicMember keyPath: KeyPath<Dependencies, Value>
+  ) -> Value {
+    Dependencies.global[keyPath: Dependencies.aliases.standardAlias(for: keyPath)]
+  }
 
   /// Identify a dependency to another one.
   ///

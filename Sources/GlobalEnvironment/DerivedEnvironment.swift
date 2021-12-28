@@ -1,4 +1,5 @@
-import Dependencies
+import ComposableDependencies
+
 /// Use this property wrapper to declare some child ``GlobalEnvironment`` in a
 /// ``GlobalEnvironment`` parent.
 ///

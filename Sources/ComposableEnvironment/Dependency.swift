@@ -1,3 +1,5 @@
+import ComposableDependencies
+
 /// Use this property wrapper to declare depencies in a ``ComposableEnvironment`` subclass.
 ///
 /// You reference the dependency by its `KeyPath` originating from  `Dependencies`, and

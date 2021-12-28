@@ -1,3 +1,5 @@
+import ComposableDependencies
+
 /// Use this property wrapper to access global depencies anywhere.
 ///
 /// You reference the dependency by its `KeyPath` originating from  `Dependencies`, and

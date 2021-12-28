@@ -19,6 +19,10 @@ let package = Package(
       name: "GlobalEnvironment",
       targets: ["GlobalEnvironment"]
     ),
+    .library(
+      name: "ComposableDependencies",
+      targets: ["ComposableDependencies"]
+    )
   ],
   dependencies: [
     .package(url: "https://github.com/pointfreeco/swift-composable-architecture", from: "0.21.0"),
@@ -28,8 +32,8 @@ let package = Package(
       name: "ComposableEnvironment",
       dependencies: [
         .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
-        "Dependencies",
-        "DependencyAliases",
+        "ComposableDependencies",
+        "_DependencyAliases",
       ]
     ),
     .testTarget(
@@ -37,25 +41,31 @@ let package = Package(
       dependencies: ["ComposableEnvironment"]
     ),
     .target(
-      name: "Dependencies",
+      name: "ComposableDependencies",
+      dependencies: [
+        .target(name: "_Dependencies")
+      ]
+    ),
+    .target(
+      name: "_Dependencies",
       dependencies: []
     ),
     .target(
-      name: "DependencyAliases",
+      name: "_DependencyAliases",
       dependencies: [
-        "Dependencies",
+        "ComposableDependencies",
       ]
     ),
     .testTarget(
       name: "DependencyAliasesTests",
-      dependencies: ["DependencyAliases"]
+      dependencies: ["_DependencyAliases"]
     ),
     .target(
       name: "GlobalEnvironment",
       dependencies: [
         .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
-        "Dependencies",
-        "DependencyAliases",
+        "ComposableDependencies",
+        "_DependencyAliases",
       ]
     ),
     .testTarget(
