@@ -34,7 +34,7 @@ fileprivate extension Dependencies {
 final class GlobalEnvironmentTests: XCTestCase {
   override func setUp() {
     super.setUp()
-    Dependencies.global = _createDependencies()
+    Dependencies.reset()
     Dependencies.clearAliases()
   }
 

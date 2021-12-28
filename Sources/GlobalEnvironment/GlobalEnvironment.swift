@@ -137,3 +137,20 @@ public extension Dependencies {
     Self.aliases.clear()
   }
 }
+
+public extension Dependencies {
+  /// Use this static method to reset all global depedencies to their default values.
+  /// You typically call this method during the `setUp()` method of some `XCTestCase` subclass:
+  /// ```swift
+  /// class SomeFeatureTests: XCTextCase {
+  ///   override func setUp() {
+  ///     super.setUp()
+  ///     Dependencies.reset()
+  ///   }
+  ///   // …
+  /// }
+  /// ```
+  static func reset() {
+    Dependencies.global = DependenciesUtilities.new()
+  }
+}
