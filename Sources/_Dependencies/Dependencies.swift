@@ -43,23 +43,24 @@ public struct Dependencies {
   }
 
   fileprivate var values = [ObjectIdentifier: DependencyValue]()
-
+  
+  fileprivate init() {}
+  
   public subscript<T>(_ key: T.Type) -> T.Value where T: DependencyKey {
     get { values[ObjectIdentifier(key)]?.value as? T.Value ?? key.defaultValue }
     set { values[ObjectIdentifier(key)] = .defined(newValue) }
   }
 }
 
-/// - Warning: This method is public for implementation reasons. You shouldn't have to call it
-/// when using the library.
-public func _createDependencies() -> Dependencies { .init() }
-
-/// - Warning: This method is public for implementation reasons. You shouldn't have to call it
-/// when using the library.
-public func _merge(_ upstream: Dependencies, to dependencies: inout Dependencies) {
-  // We should preserve dependencies that were defined explicitely.
-  for (key, value) in upstream.values {
-    guard dependencies.values[key]?.isDefined != true else { continue }
-    dependencies.values[key] = value.inherit()
+// This type is used internally only
+public enum DependenciesUtilities {
+  public static func new() -> Dependencies { .init() }
+  public static func merge(_ upstream: Dependencies, to dependencies: inout Dependencies) {
+    // We should preserve dependencies that were defined explicitely.
+    for (key, value) in upstream.values {
+      guard dependencies.values[key]?.isDefined != true else { continue }
+      dependencies.values[key] = value.inherit()
+    }
   }
 }
+

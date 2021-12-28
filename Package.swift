@@ -33,6 +33,7 @@ let package = Package(
       dependencies: [
         .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
         "ComposableDependencies",
+        "_Dependencies",
         "_DependencyAliases",
       ]
     ),
@@ -43,7 +44,7 @@ let package = Package(
     .target(
       name: "ComposableDependencies",
       dependencies: [
-        .target(name: "_Dependencies")
+        "_Dependencies"
       ]
     ),
     .target(
@@ -65,6 +66,7 @@ let package = Package(
       dependencies: [
         .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
         "ComposableDependencies",
+        "_Dependencies",
         "_DependencyAliases",
       ]
     ),

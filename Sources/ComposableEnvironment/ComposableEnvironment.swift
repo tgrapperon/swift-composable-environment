@@ -1,5 +1,5 @@
 @_implementationOnly import _DependencyAliases
-import _Dependencies
+@_implementationOnly import _Dependencies
 import Foundation
 
 /// The base class of your environments.
@@ -39,7 +39,7 @@ open class ComposableEnvironment {
   /// well as their own children ``DerivedEnvironment``.
   public required init() {}
 
-  var dependencies: Dependencies = _createDependencies() {
+  var dependencies: Dependencies = DependenciesUtilities.new() {
     didSet {
       // This will make any child refetch its upstream dependencies when accessed.
       upToDateDerivedEnvironments.removeAllObjects()
@@ -54,7 +54,7 @@ open class ComposableEnvironment {
     if !parent.upToDateDerivedEnvironments.contains(self) {
       // The following line updates the `environment`'s dependencies, invalidating its children
       // dependencies when it mutates its own `dependencies` property as a side effect.
-      _merge(parent.dependencies, to: &dependencies)
+      DependenciesUtilities.merge(parent.dependencies, to: &dependencies)
       parent.upToDateDerivedEnvironments.add(self)
     }
     return self

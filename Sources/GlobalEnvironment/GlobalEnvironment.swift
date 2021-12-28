@@ -1,8 +1,8 @@
 @_implementationOnly import _DependencyAliases
-import _Dependencies
+@_implementationOnly  import _Dependencies
 
 extension Dependencies {
-  static var global: Dependencies = _createDependencies()
+  static var global: Dependencies = DependenciesUtilities.new()
   static var aliases = DependencyAliases()
 }
 
