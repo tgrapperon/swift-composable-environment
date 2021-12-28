@@ -1,3 +1,4 @@
+@_exported import ComposableDependencies
 @_implementationOnly import _DependencyAliases
 @_implementationOnly import _Dependencies
 import Foundation
