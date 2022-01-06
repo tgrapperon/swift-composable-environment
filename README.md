@@ -183,7 +183,7 @@ The latest documentation for ComposableEnvironment's APIs is available [here](ht
 ## Installation
 Add 
 ```swift
-.package(url: "https://github.com/tgrapperon/swift-composable-environment", from: "0.1.0")
+.package(url: "https://github.com/tgrapperon/swift-composable-environment", from: "0.5.0")
 ```
 to your Package dependencies in `Package.swift`, and then
 ```swift
