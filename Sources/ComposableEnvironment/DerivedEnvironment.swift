@@ -25,13 +25,13 @@ import ComposableDependencies
 /// }
 /// ```
 @propertyWrapper
-public final class DerivedEnvironment<Value> where Value: ComposableEnvironment {
+public final class DerivedEnvironment<Environment> where Environment: ComposableEnvironment {
   /// Alternative to ``wrappedValue`` with access to the enclosing instance.
   public static subscript<EnclosingSelf: ComposableEnvironment>(
     _enclosingInstance instance: EnclosingSelf,
-    wrapped wrappedKeyPath: ReferenceWritableKeyPath<EnclosingSelf, Value>,
+    wrapped wrappedKeyPath: ReferenceWritableKeyPath<EnclosingSelf, Environment>,
     storage storageKeyPath: ReferenceWritableKeyPath<EnclosingSelf, DerivedEnvironment>
-  ) -> Value {
+  ) -> Environment {
     get {
       let environment = instance[keyPath: storageKeyPath]
         .environment
@@ -49,19 +49,20 @@ public final class DerivedEnvironment<Value> where Value: ComposableEnvironment 
     }
   }
 
-  lazy var environment: Value = .init()
+  lazy var environment: Environment = .init()
 
-  var aliasBuilder: AliasBuilder<Value>?
+  var aliasBuilder: AliasBuilder<Environment>?
   var didSetAliases: Bool = false
 
   /// See ``DerivedEnvironment`` discussion
-  public init(wrappedValue: Value, aliases: ((AliasBuilder<Value>) -> AliasBuilder<Value>)? = nil) {
+  public init(wrappedValue: Environment, aliases: ((AliasBuilder<Environment>)
+                                                   -> AliasBuilder<Environment>)? = nil) {
     self.environment = wrappedValue
     self.aliasBuilder = aliases.map { $0(.init()) }
   }
 
   /// See ``DerivedEnvironment`` discussion
-  public init(aliases: ((AliasBuilder<Value>) -> AliasBuilder<Value>)? = nil) {
+  public init(aliases: ((AliasBuilder<Environment>) -> AliasBuilder<Environment>)? = nil) {
     self.aliasBuilder = aliases.map { $0(.init()) }
   }
 
@@ -69,7 +70,7 @@ public final class DerivedEnvironment<Value> where Value: ComposableEnvironment 
     *, unavailable,
     message: "@DerivedEnvironment should be used in a ComposableEnvironment class."
   )
-  public var wrappedValue: Value {
+  public var wrappedValue: Environment {
     get { fatalError() }
     set { fatalError() }
   }
