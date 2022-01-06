@@ -36,7 +36,8 @@ public final class DerivedEnvironment<Value> where Value: ComposableEnvironment 
       let environment = instance[keyPath: storageKeyPath]
         .environment
       if !instance[keyPath: storageKeyPath].didSetAliases,
-         let aliasBuilder = instance[keyPath: storageKeyPath].aliasBuilder {
+        let aliasBuilder = instance[keyPath: storageKeyPath].aliasBuilder
+      {
         defer { instance[keyPath: storageKeyPath].didSetAliases = true }
         return aliasBuilder.transforming(environment)
       }
@@ -49,7 +50,7 @@ public final class DerivedEnvironment<Value> where Value: ComposableEnvironment 
   }
 
   lazy var environment: Value = .init()
-  
+
   var aliasBuilder: AliasBuilder<Value>?
   var didSetAliases: Bool = false
 
@@ -64,8 +65,10 @@ public final class DerivedEnvironment<Value> where Value: ComposableEnvironment 
     self.aliasBuilder = aliases.map { $0(.init()) }
   }
 
-  @available(*, unavailable,
-             message: "@DerivedEnvironment should be used in a ComposableEnvironment class.")
+  @available(
+    *, unavailable,
+    message: "@DerivedEnvironment should be used in a ComposableEnvironment class."
+  )
   public var wrappedValue: Value {
     get { fatalError() }
     set { fatalError() }

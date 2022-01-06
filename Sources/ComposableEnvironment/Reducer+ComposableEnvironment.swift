@@ -1,6 +1,6 @@
 import ComposableArchitecture
 
-public extension Reducer where Environment: ComposableEnvironment {
+extension Reducer where Environment: ComposableEnvironment {
   /// Transforms a reducer that works on local state, action, and environment into one that works on
   /// global state, action and environment when the local environment is a subclass of
   /// ``ComposableEnvironment``.
@@ -18,7 +18,7 @@ public extension Reducer where Environment: ComposableEnvironment {
   ///   - toLocalState: A key path that can get/set `State` inside `GlobalState`.
   ///   - toLocalAction: A case path that can extract/embed `Action` from `GlobalAction`.
   /// - Returns: A reducer that works on `GlobalState`, `GlobalAction`, `GlobalEnvironment`.
-  func pullback<GlobalState, GlobalAction, GlobalEnvironment>(
+  public func pullback<GlobalState, GlobalAction, GlobalEnvironment>(
     state toLocalState: WritableKeyPath<GlobalState, State>,
     action toLocalAction: CasePath<GlobalAction, Action>
   ) -> Reducer<GlobalState, GlobalAction, GlobalEnvironment>
@@ -50,7 +50,7 @@ public extension Reducer where Environment: ComposableEnvironment {
   ///   - toLocalState: A case path that can extract/embed `State` from `GlobalState`.
   ///   - toLocalAction: A case path that can extract/embed `Action` from `GlobalAction`.
   /// - Returns: A reducer that works on `GlobalState`, `GlobalAction`, `GlobalEnvironment`.
-  func pullback<GlobalState, GlobalAction, GlobalEnvironment>(
+  public func pullback<GlobalState, GlobalAction, GlobalEnvironment>(
     state toLocalState: CasePath<GlobalState, State>,
     action toLocalAction: CasePath<GlobalAction, Action>,
     breakpointOnNil: Bool = true,
@@ -84,7 +84,7 @@ public extension Reducer where Environment: ComposableEnvironment {
   ///     generally considered a logic error, as a child reducer cannot process a child action
   ///     for unavailable child state.
   /// - Returns: A reducer that works on `GlobalState`, `GlobalAction`, `GlobalEnvironment`.
-  func forEach<GlobalState, GlobalAction, GlobalEnvironment, ID>(
+  public func forEach<GlobalState, GlobalAction, GlobalEnvironment, ID>(
     state toLocalState: WritableKeyPath<GlobalState, IdentifiedArray<ID, State>>,
     action toLocalAction: CasePath<GlobalAction, (ID, Action)>,
     breakpointOnNil: Bool = true,
@@ -100,7 +100,7 @@ public extension Reducer where Environment: ComposableEnvironment {
       breakpointOnNil: breakpointOnNil
     )
   }
-  
+
   /// A version of ``pullback(state:action:environment:)`` that transforms a reducer that works on
   /// an element into one that works on a dictionary of element values, when the local environment
   /// is a subclass of``ComposableEnvironment``.
@@ -117,7 +117,7 @@ public extension Reducer where Environment: ComposableEnvironment {
   ///     generally considered a logic error, as a child reducer cannot process a child action
   ///     for unavailable child state.
   /// - Returns: A reducer that works on `GlobalState`, `GlobalAction`, `GlobalEnvironment`.
-  func forEach<GlobalState, GlobalAction, GlobalEnvironment, Key>(
+  public func forEach<GlobalState, GlobalAction, GlobalEnvironment, Key>(
     state toLocalState: WritableKeyPath<GlobalState, [Key: State]>,
     action toLocalAction: CasePath<GlobalAction, (Key, Action)>,
     breakpointOnNil: Bool = true,

@@ -1,7 +1,7 @@
 @_exported import ComposableDependencies
-@_implementationOnly import _DependencyAliases
-@_implementationOnly import _Dependencies
 import Foundation
+@_implementationOnly import _Dependencies
+@_implementationOnly import _DependencyAliases
 
 /// The base class of your environments.
 ///
@@ -159,7 +159,7 @@ open class ComposableEnvironment {
   }
 }
 
-public extension Dependencies {
+extension Dependencies {
   /// Use this static method to reset all aliases you may have set between dependencies.
   /// You typically call this method during the `setUp()` method of some `XCTestCase` subclass:
   /// ```swift
@@ -171,7 +171,7 @@ public extension Dependencies {
   ///   // …
   /// }
   /// ```
-  static func clearAliases() {
+  public static func clearAliases() {
     ComposableEnvironment.aliases.clear()
   }
 }

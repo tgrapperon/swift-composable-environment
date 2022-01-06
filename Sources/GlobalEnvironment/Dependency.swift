@@ -30,7 +30,7 @@ public struct Dependency<Value> {
   public init(_ keyPath: KeyPath<Dependencies, Value>) {
     self.keyPath = keyPath
   }
-  
+
   public var wrappedValue: Value {
     Dependencies.global[keyPath: Dependencies.aliases.standardAlias(for: keyPath)]
   }

@@ -1,6 +1,6 @@
 @_exported import ComposableDependencies
+@_implementationOnly import _Dependencies
 @_implementationOnly import _DependencyAliases
-@_implementationOnly  import _Dependencies
 
 extension Dependencies {
   static var global: Dependencies = DependenciesUtilities.new()
@@ -26,7 +26,7 @@ public protocol GlobalEnvironment: GlobalDependenciesAccessing {
   init()
 }
 
-public extension GlobalDependenciesAccessing {
+extension GlobalDependenciesAccessing {
   /// Use this function to set the values of a given dependency for the global environment.
   ///
   /// Calls to this function are chainable, and you can specify any `Dependencies`
@@ -47,7 +47,7 @@ public extension GlobalDependenciesAccessing {
   ///   .with(\.mainQueue, .main)
   /// ```
   @discardableResult
-  func with<V>(_ keyPath: WritableKeyPath<Dependencies, V>, _ value: V) -> Self {
+  public func with<V>(_ keyPath: WritableKeyPath<Dependencies, V>, _ value: V) -> Self {
     for alias in Dependencies.aliases.aliasing(with: keyPath) {
       Dependencies.global[keyPath: alias] = value
     }
@@ -56,7 +56,7 @@ public extension GlobalDependenciesAccessing {
 
   /// A read-write subcript to directly access a dependency from its `KeyPath` in
   /// `Dependencies`.
-  subscript<Value>(keyPath: WritableKeyPath<Dependencies, Value>) -> Value {
+  public subscript<Value>(keyPath: WritableKeyPath<Dependencies, Value>) -> Value {
     get { Dependencies.global[keyPath: Dependencies.aliases.standardAlias(for: keyPath)] }
     set {
       for alias in Dependencies.aliases.aliasing(with: keyPath) {
@@ -69,7 +69,7 @@ public extension GlobalDependenciesAccessing {
   /// - Remark: This direct access can't be used to set a dependency, as it will try to go through
   /// the setter part of a `Dependency` property wrapper, which is not allowed yet. You can use
   ///  ``with(_:_:)`` or ``subscript(_:)`` instead.
-  subscript<Value>(
+  public subscript<Value>(
     dynamicMember keyPath: KeyPath<Dependencies, Value>
   ) -> Value {
     Dependencies.global[keyPath: Dependencies.aliases.standardAlias(for: keyPath)]
@@ -112,7 +112,7 @@ public extension GlobalDependenciesAccessing {
   /// - Parameters:
   ///   - dependency: The `KeyPath` of the aliased dependency in `Dependencies`
   ///   - to: A `KeyPath` of another dependency in `Dependencies` that serves as a reference value.
-  func aliasing<Value>(
+  public func aliasing<Value>(
     _ dependency: WritableKeyPath<Dependencies, Value>,
     to default: WritableKeyPath<Dependencies, Value>
   ) -> Self {
@@ -121,7 +121,7 @@ public extension GlobalDependenciesAccessing {
   }
 }
 
-public extension Dependencies {
+extension Dependencies {
   /// Use this static method to reset all aliases you may have set between dependencies.
   /// You typically call this method during the `setUp()` method of some `XCTestCase` subclass:
   /// ```swift
@@ -133,12 +133,12 @@ public extension Dependencies {
   ///   // …
   /// }
   /// ```
-  static func clearAliases() {
+  public static func clearAliases() {
     Self.aliases.clear()
   }
 }
 
-public extension Dependencies {
+extension Dependencies {
   /// Use this static method to reset all global depedencies to their default values.
   /// You typically call this method during the `setUp()` method of some `XCTestCase` subclass:
   /// ```swift
@@ -150,7 +150,7 @@ public extension Dependencies {
   ///   // …
   /// }
   /// ```
-  static func reset() {
+  public static func reset() {
     Dependencies.global = DependenciesUtilities.new()
   }
 }

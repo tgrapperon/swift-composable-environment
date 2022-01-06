@@ -1,5 +1,5 @@
-import ComposableEnvironment
 import ComposableArchitecture
+import ComposableEnvironment
 
 // mainQueue dependency:
 private struct MainQueueKey: DependencyKey {
@@ -8,8 +8,8 @@ private struct MainQueueKey: DependencyKey {
   }
 }
 
-public extension Dependencies {
-  var mainQueue: AnySchedulerOf<DispatchQueue> {
+extension Dependencies {
+  public var mainQueue: AnySchedulerOf<DispatchQueue> {
     get { self[MainQueueKey.self] }
     set { self[MainQueueKey.self] = newValue }
   }
@@ -22,8 +22,8 @@ private struct BackgroundQueueKey: DependencyKey {
   }
 }
 
-public extension Dependencies {
-  var backgroundQueue: AnySchedulerOf<DispatchQueue> {
+extension Dependencies {
+  public var backgroundQueue: AnySchedulerOf<DispatchQueue> {
     get { self[BackgroundQueueKey.self] }
     set { self[BackgroundQueueKey.self] = newValue }
   }

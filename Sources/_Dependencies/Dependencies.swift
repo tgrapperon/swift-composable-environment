@@ -43,9 +43,9 @@ public struct Dependencies {
   }
 
   fileprivate var values = [ObjectIdentifier: DependencyValue]()
-  
+
   fileprivate init() {}
-  
+
   public subscript<T>(_ key: T.Type) -> T.Value where T: DependencyKey {
     get { values[ObjectIdentifier(key)]?.value as? T.Value ?? key.defaultValue }
     set { values[ObjectIdentifier(key)] = .defined(newValue) }
@@ -63,4 +63,3 @@ public enum DependenciesUtilities {
     }
   }
 }
-

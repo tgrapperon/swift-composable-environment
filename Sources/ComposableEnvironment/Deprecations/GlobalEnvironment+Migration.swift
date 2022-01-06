@@ -1,4 +1,7 @@
-@available(*, deprecated, message: """
+@available(
+  *, deprecated,
+  message:
+    """
   If you are transitioning from `GlobalEnvironment`, you should make sure that is type is a \
   subclass of `ComposableEnvironment`.
   
@@ -8,12 +11,16 @@
   If you are not transitioning from `GlobalEnvironment`, you should not have to use this type \
   at all. It is only provided to help transitioning projects from `GlobalEnvironment` to \
   `ComposableEnvironment`.
-  """)
+  """
+)
 open class GlobalEnvironment: ComposableEnvironment {
   public required init() {}
 }
 
-@available(*, deprecated, message: """
+@available(
+  *, deprecated,
+  message:
+    """
   If you are transitioning from `GlobalEnvironment`, you should make sure that is type is a \
   subclass of `ComposableEnvironment`.
   
@@ -23,7 +30,8 @@ open class GlobalEnvironment: ComposableEnvironment {
   If you are not transitioning from `GlobalEnvironment`, you should not have to use this type \
   at all. It is only provided to help transitioning projects from `GlobalEnvironment` to \
   `ComposableEnvironment`.
-  """)
+  """
+)
 open class GlobalDependenciesAccessing: ComposableEnvironment {
   public required init() {}
 }

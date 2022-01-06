@@ -1,14 +1,15 @@
-@testable import GlobalEnvironment
-import ComposableDependencies
 import ComposableArchitecture
+import ComposableDependencies
 import XCTest
 
-fileprivate struct IntKey: DependencyKey {
+@testable import GlobalEnvironment
+
+private struct IntKey: DependencyKey {
   static var defaultValue: Int { 1 }
 }
 
-fileprivate extension Dependencies {
-  var int: Int {
+extension Dependencies {
+  fileprivate var int: Int {
     get { self[IntKey.self] }
     set { self[IntKey.self] = newValue }
   }
@@ -41,7 +42,7 @@ final class ReducerAdditionsTests: XCTestCase {
     let store = TestStore(
       initialState: 0,
       reducer: firstReducer,
-      environment: First() // Swift ≥ 5.4 can use .init()
+      environment: First()  // Swift ≥ 5.4 can use .init()
         .with(\.int, 2)
     )
 
@@ -77,7 +78,7 @@ final class ReducerAdditionsTests: XCTestCase {
     let store = TestStore(
       initialState: .int(0),
       reducer: firstReducer,
-      environment: First() // Swift ≥ 5.4 can use .init()
+      environment: First()  // Swift ≥ 5.4 can use .init()
         .with(\.int, 2)
     )
 
@@ -120,7 +121,7 @@ final class ReducerAdditionsTests: XCTestCase {
         .init(id: "B", int: 3),
       ]),
       reducer: firstReducer,
-      environment: First() // Swift ≥ 5.4 can use .init()
+      environment: First()  // Swift ≥ 5.4 can use .init()
         .with(\.int, 2)
     )
 
@@ -162,7 +163,7 @@ final class ReducerAdditionsTests: XCTestCase {
         "B": 3,
       ],
       reducer: firstReducer,
-      environment: First() // Swift ≥ 5.4 can use .init()
+      environment: First()  // Swift ≥ 5.4 can use .init()
         .with(\.int, 2)
     )
 

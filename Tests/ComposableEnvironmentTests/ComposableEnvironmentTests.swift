@@ -1,30 +1,31 @@
-@testable import ComposableEnvironment
 import XCTest
 
-fileprivate struct IntKey: DependencyKey {
+@testable import ComposableEnvironment
+
+private struct IntKey: DependencyKey {
   static var defaultValue: Int { 1 }
 }
 
-fileprivate struct Int1Key: DependencyKey {
+private struct Int1Key: DependencyKey {
   static var defaultValue: Int { -1 }
 }
 
-fileprivate struct Int2Key: DependencyKey {
+private struct Int2Key: DependencyKey {
   static var defaultValue: Int { -10 }
 }
 
-fileprivate extension Dependencies {
-  var int: Int {
+extension Dependencies {
+  fileprivate var int: Int {
     get { self[IntKey.self] }
     set { self[IntKey.self] = newValue }
   }
-  
-  var int1: Int {
+
+  fileprivate var int1: Int {
     get { self[Int1Key.self] }
     set { self[Int1Key.self] = newValue }
   }
-  
-  var int2: Int {
+
+  fileprivate var int2: Int {
     get { self[Int2Key.self] }
     set { self[Int2Key.self] = newValue }
   }
@@ -35,7 +36,7 @@ final class ComposableEnvironmentTests: XCTestCase {
     super.setUp()
     Dependencies.clearAliases()
   }
-  
+
   func testDependency() {
     class Env: ComposableEnvironment {
       @Dependency(\.int) var int
@@ -43,13 +44,13 @@ final class ComposableEnvironmentTests: XCTestCase {
     let env = Env()
     XCTAssertEqual(env.int, 1)
   }
-  
+
   func testDependencyImplicitAccess() {
     class Env: ComposableEnvironment {}
     let env = Env()
     XCTAssertEqual(env[\.int], 1)
   }
-  
+
   func testDependencyPropagation() {
     class Parent: ComposableEnvironment {
       @Dependency(\.int) var int
@@ -60,12 +61,12 @@ final class ComposableEnvironmentTests: XCTestCase {
     }
     let parent = Parent()
     XCTAssertEqual(parent.child.int, 1)
-    
+
     let parentWith2 = Parent().with(\.int, 2)
     XCTAssertEqual(parentWith2.int, 2)
     XCTAssertEqual(parentWith2.child.int, 2)
   }
-  
+
   func testDependencyOverride() {
     class Parent: ComposableEnvironment {
       @Dependency(\.int) var int
@@ -75,13 +76,13 @@ final class ComposableEnvironmentTests: XCTestCase {
     class Child: ComposableEnvironment {
       @Dependency(\.int) var int
     }
-    
+
     let parent = Parent().with(\.int, 2)
     XCTAssertEqual(parent.int, 2)
     XCTAssertEqual(parent.child.int, 2)
     XCTAssertEqual(parent.sibling.int, 3)
   }
-  
+
   func testDerivedWithProperties() {
     class Parent: ComposableEnvironment {
       @Dependency(\.int) var int
@@ -96,16 +97,16 @@ final class ComposableEnvironmentTests: XCTestCase {
         self.otherInt = otherInt
       }
     }
-    
+
     let parent = Parent().with(\.int, 2)
     XCTAssertEqual(parent.int, 2)
     XCTAssertEqual(parent.child.int, 2)
     XCTAssertEqual(parent.sibling.int, 3)
-    
+
     XCTAssertEqual(parent.child.otherInt, 4)
     XCTAssertEqual(parent.sibling.otherInt, 5)
   }
-  
+
   func testLongChainsPropagation() {
     class Parent: ComposableEnvironment {
       @Dependency(\.int) var int
@@ -131,7 +132,7 @@ final class ComposableEnvironmentTests: XCTestCase {
     XCTAssertEqual(parent.c1.c2.c3.c4.c5.int, 4)
     XCTAssertEqual(parent.c1.c2.c3.int, 4)
   }
-  
+
   func testModifyingDependenciesOncePrimed() {
     class Parent: ComposableEnvironment {
       @Dependency(\.int) var int
@@ -157,22 +158,22 @@ final class ComposableEnvironmentTests: XCTestCase {
     XCTAssertEqual(parent.c1.c2.c3.int, 4)
     XCTAssertEqual(parent.c1.c2.c3.c4.c5.int, 4)
     // At this stage, the chain is completely primed.
-    
+
     //Update parent with 7
     parent[\.int] = 7
     XCTAssertEqual(parent.c1.c2.c3.c4.c5.int, 7)
-    
+
     //Update c3 with 8
     parent.c1.c2.c3[\.int] = 8
     XCTAssertEqual(parent.c1.c2.c3.c4.c5.int, 8)
-    
+
     //Update parent again with 9
     parent[\.int] = 9
     // c5 should keep c3's value
     XCTAssertEqual(parent.c1.c2.c3.int, 8)
     XCTAssertEqual(parent.c1.c2.c3.c4.c5.int, 8)
   }
-  
+
   func testDependencyAliasing() {
     class Parent: ComposableEnvironment {
       @Dependency(\.int) var int
@@ -184,7 +185,7 @@ final class ComposableEnvironmentTests: XCTestCase {
     XCTAssertEqual(parent.with(\.int2, 4).int, 4)
     XCTAssertEqual(parent.int1, 4)
   }
-  
+
   func testDependencyAliasingViaPropertyWrapper() {
     class Parent: ComposableEnvironment {
       @Dependency(\.int) var int
@@ -197,53 +198,53 @@ final class ComposableEnvironmentTests: XCTestCase {
     XCTAssertEqual(parent.c1.int1, 1)
     XCTAssertEqual(parent.with(\.int, 4).c1.int1, 4)
   }
-  
+
   func testRecursiveEnvironment() {
     class FirstEnvironment: ComposableEnvironment {
       @DerivedEnvironment<SecondEnvironment>
       var second
-      
+
       @Dependency(\.int1)
       var int1
     }
-    
+
     class SecondEnvironment: ComposableEnvironment {
       @DerivedEnvironment<FirstEnvironment>
       var first
-      
+
       @Dependency(\.int2)
       var int2
     }
-    
+
     let first = FirstEnvironment()
     XCTAssertEqual(first.int1, -1)
     XCTAssertEqual(first.second.first.int1, -1)
-    
+
     XCTAssertEqual(first.second.int2, -10)
     XCTAssertEqual(first.second.first.second.int2, -10)
   }
-  
-//  func testDependencyAliases() {
-//    var dep = DependencyAliases()
-//    dep.alias(dependency: \Dependencies.int1, to: \Dependencies.int)
-//    dep.alias(dependency: \Dependencies.int2, to: \Dependencies.int1)
-//    XCTAssertEqual(dep.canonicalAlias(for: \Dependencies.int), \.int)
-//    XCTAssertEqual(dep.canonicalAlias(for: \Dependencies.int1), \.int)
-//    XCTAssertEqual(dep.canonicalAlias(for: \Dependencies.int2), \.int)
-//
-//
-//
-//    dep.aliases.removeAll()
-//    dep.alias(dependency: \Dependencies.int, to: \Dependencies.int1)
-//    dep.alias(dependency: \Dependencies.int1, to: \Dependencies.int2)
-//    XCTAssertEqual(dep.canonicalAlias(for: \Dependencies.int), \.int2)
-//    XCTAssertEqual(dep.canonicalAlias(for: \Dependencies.int1), \.int2)
-//    XCTAssertEqual(dep.canonicalAlias(for: \Dependencies.int2), \.int2)
-//
-//    XCTAssertEqual(dep.preimage(for: \Dependencies.int), [\.int1, \.int2, \.int])
-//    XCTAssertEqual(dep.preimage(for: \Dependencies.int1), [\.int1, \.int2, \.int])
-//    XCTAssertEqual(dep.preimage(for: \Dependencies.int2), [\.int1, \.int2, \.int])
-//
-//    XCTAssertEqual(dep.preimage(for: \Dependencies.int).count, 3)
-//  }
+
+  //  func testDependencyAliases() {
+  //    var dep = DependencyAliases()
+  //    dep.alias(dependency: \Dependencies.int1, to: \Dependencies.int)
+  //    dep.alias(dependency: \Dependencies.int2, to: \Dependencies.int1)
+  //    XCTAssertEqual(dep.canonicalAlias(for: \Dependencies.int), \.int)
+  //    XCTAssertEqual(dep.canonicalAlias(for: \Dependencies.int1), \.int)
+  //    XCTAssertEqual(dep.canonicalAlias(for: \Dependencies.int2), \.int)
+  //
+  //
+  //
+  //    dep.aliases.removeAll()
+  //    dep.alias(dependency: \Dependencies.int, to: \Dependencies.int1)
+  //    dep.alias(dependency: \Dependencies.int1, to: \Dependencies.int2)
+  //    XCTAssertEqual(dep.canonicalAlias(for: \Dependencies.int), \.int2)
+  //    XCTAssertEqual(dep.canonicalAlias(for: \Dependencies.int1), \.int2)
+  //    XCTAssertEqual(dep.canonicalAlias(for: \Dependencies.int2), \.int2)
+  //
+  //    XCTAssertEqual(dep.preimage(for: \Dependencies.int), [\.int1, \.int2, \.int])
+  //    XCTAssertEqual(dep.preimage(for: \Dependencies.int1), [\.int1, \.int2, \.int])
+  //    XCTAssertEqual(dep.preimage(for: \Dependencies.int2), [\.int1, \.int2, \.int])
+  //
+  //    XCTAssertEqual(dep.preimage(for: \Dependencies.int).count, 3)
+  //  }
 }

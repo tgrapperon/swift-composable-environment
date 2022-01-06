@@ -32,13 +32,15 @@ class Level1Environment: ComposableEnvironment {
 //   class Level1Environment: ComposableEnvironment { }
 
 let level1Reducer = Reducer<Level1State, Level1Action, Level1Environment>.combine(
-  level2Reducer.pullback(state: \.first,
-                         action: /Level1Action.first,
-                         environment: \.first), // (or \.level2 if we had used only one property)
+  level2Reducer.pullback(
+    state: \.first,
+    action: /Level1Action.first,
+    environment: \.first),  // (or \.level2 if we had used only one property)
 
-  level2Reducer.pullback(state: \.second,
-                         action: /Level1Action.second,
-                         environment: \.second) // (or \.level2 if we had used only one property)
+  level2Reducer.pullback(
+    state: \.second,
+    action: /Level1Action.second,
+    environment: \.second)  // (or \.level2 if we had used only one property)
 
   // Alternatively, we can forgo the `@DerivedEnvironment` declarations in `Level1Environment`, and
   // use the environment-less pullback variants:
@@ -81,14 +83,16 @@ struct Level1View: View {
 
 struct Level1View_Preview: PreviewProvider {
   static var previews: some View {
-    Level1View(store:
-      .init(initialState:
+    Level1View(
+      store:
         .init(
-          first: .init(randomNumber: 6),
-          second: .init(randomNumber: nil)
-        ),
-        reducer: level1Reducer,
-        environment: .init())
+          initialState:
+            .init(
+              first: .init(randomNumber: 6),
+              second: .init(randomNumber: nil)
+            ),
+          reducer: level1Reducer,
+          environment: .init())
     )
   }
 }

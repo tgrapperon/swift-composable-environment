@@ -28,16 +28,17 @@ public struct DependencyAliases {
     var dependency = dependency
     while let alias = aliases[dependency] as? T {
       guard !path.contains(alias) else {
-        breakpoint("""
-        ---
-        Warning: Cyclic dependency aliases for \(String(describing: T.self))
+        breakpoint(
+          """
+          ---
+          Warning: Cyclic dependency aliases for \(String(describing: T.self))
 
-        A cycle was detected in the graph of dependency aliases. As a consequence, the depedency
-        providing the default value is ambiguous.
+          A cycle was detected in the graph of dependency aliases. As a consequence, the depedency
+          providing the default value is ambiguous.
 
-        Please review your dependency aliases to make aliases for \(String(describing: T.self))
-        form a directed graph.
-        """)
+          Please review your dependency aliases to make aliases for \(String(describing: T.self))
+          form a directed graph.
+          """)
         break
       }
       path.append(alias)

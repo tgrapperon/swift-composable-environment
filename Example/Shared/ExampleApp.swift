@@ -4,10 +4,11 @@ import SwiftUI
 
 let store = Store<Level0State, Level0Action>(
   initialState:
-  .init(level1: .init(
-    first: .init(randomNumber: nil),
-    second: .init(randomNumber: nil)
-  )),
+    .init(
+      level1: .init(
+        first: .init(randomNumber: nil),
+        second: .init(randomNumber: nil)
+      )),
   reducer: level0Reducer,
   environment: .init()
 )

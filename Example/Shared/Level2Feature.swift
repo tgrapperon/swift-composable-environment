@@ -9,13 +9,13 @@ public typealias RandomNumberGenerator = () -> Int
 // Create a Composable Dependency:
 private struct RNGKey: DependencyKey {
   static var defaultValue: RandomNumberGenerator {
-    { Int.random(in: 0 ... 1000) }
+    { Int.random(in: 0...1000) }
   }
 }
 
 // Install it in `Dependencies`:
-public extension Dependencies {
-  var rng: RandomNumberGenerator {
+extension Dependencies {
+  public var rng: RandomNumberGenerator {
     get { self[RNGKey.self] }
     set { self[RNGKey.self] = newValue }
   }
@@ -52,7 +52,8 @@ let level2Reducer = Reducer<Level2State, Level2Action, Level2Environment> {
   case .requestRandomNumber:
     // Note that we don't have defined any `@Dependency(\.mainQueue)` in environment.
     // We use its global property name instead:
-    return environment
+    return
+      environment
       .randomNumber()
       .map(Level2Action.randomNumber)
       .receive(on: environment.mainQueue)
@@ -86,27 +87,31 @@ struct Level2View: View {
 
 struct Level2View_Preview: PreviewProvider {
   static var previews: some View {
-    Level2View(store:
-      .init(initialState:
+    Level2View(
+      store:
         .init(
-          randomNumber: 5
-        ),
-        reducer: level2Reducer,
-        environment:
-        Level2Environment() // Swift ≥ 5.4 can use .init()
-          .with(\.mainQueue, .immediate)
-          .with(\.rng) { 12 })
+          initialState:
+            .init(
+              randomNumber: 5
+            ),
+          reducer: level2Reducer,
+          environment:
+            Level2Environment()  // Swift ≥ 5.4 can use .init()
+            .with(\.mainQueue, .immediate)
+            .with(\.rng) { 12 })
     )
-    Level2View(store:
-      .init(initialState:
+    Level2View(
+      store:
         .init(
-          randomNumber: nil
-        ),
-        reducer: level2Reducer,
-        environment:
-        Level2Environment() // Swift ≥ 5.4 can use .init()
-          .with(\.mainQueue, .immediate)
-          .with(\.rng) { 54 })
+          initialState:
+            .init(
+              randomNumber: nil
+            ),
+          reducer: level2Reducer,
+          environment:
+            Level2Environment()  // Swift ≥ 5.4 can use .init()
+            .with(\.mainQueue, .immediate)
+            .with(\.rng) { 54 })
     )
   }
 }

@@ -1,31 +1,32 @@
-@testable import GlobalEnvironment
-import _Dependencies
 import XCTest
+import _Dependencies
 
-fileprivate struct IntKey: DependencyKey {
+@testable import GlobalEnvironment
+
+private struct IntKey: DependencyKey {
   static var defaultValue: Int { 1 }
 }
 
-fileprivate struct Int1Key: DependencyKey {
+private struct Int1Key: DependencyKey {
   static var defaultValue: Int { -1 }
 }
 
-fileprivate struct Int2Key: DependencyKey {
+private struct Int2Key: DependencyKey {
   static var defaultValue: Int { -10 }
 }
 
-fileprivate extension Dependencies {
-  var int: Int {
+extension Dependencies {
+  fileprivate var int: Int {
     get { self[IntKey.self] }
     set { self[IntKey.self] = newValue }
   }
-  
-  var int1: Int {
+
+  fileprivate var int1: Int {
     get { self[Int1Key.self] }
     set { self[Int1Key.self] = newValue }
   }
-  
-  var int2: Int {
+
+  fileprivate var int2: Int {
     get { self[Int2Key.self] }
     set { self[Int2Key.self] = newValue }
   }
@@ -63,7 +64,7 @@ final class GlobalEnvironmentTests: XCTestCase {
     XCTAssertEqual(env.int, 2)
     XCTAssertEqual(Env2().int, 2)
   }
-  
+
   func testDependencyAliasing() {
     struct Parent: GlobalEnvironment {
       @Dependency(\.int) var int
@@ -74,7 +75,7 @@ final class GlobalEnvironmentTests: XCTestCase {
     XCTAssertEqual(parent[\.int1], 1)
     XCTAssertEqual(parent.with(\.int1, 4).int, 4)
   }
-  
+
   func testDependencyAliasingViaPropertyWrapper() {
     struct Parent: GlobalEnvironment {
       @Dependency(\.int) var int
@@ -87,28 +88,28 @@ final class GlobalEnvironmentTests: XCTestCase {
     XCTAssertEqual(parent.c1.otherInt, 1)
     XCTAssertEqual(parent.with(\.int, 4).c1.otherInt, 4)
   }
-  
+
   func testRecursiveEnvironment() {
     struct FirstEnvironment: GlobalEnvironment {
       @DerivedEnvironment<SecondEnvironment>
       var second
-      
+
       @Dependency(\.int1)
       var int1
     }
-    
+
     struct SecondEnvironment: GlobalEnvironment {
       @DerivedEnvironment<FirstEnvironment>
       var first
-      
+
       @Dependency(\.int2)
       var int2
     }
-    
+
     let first = FirstEnvironment()
     XCTAssertEqual(first.int1, -1)
     XCTAssertEqual(first.second.first.int1, -1)
-    
+
     XCTAssertEqual(first.second.int2, -10)
     XCTAssertEqual(first.second.first.second.int2, -10)
   }

@@ -26,9 +26,10 @@ class Level0Environment: ComposableEnvironment {
 }
 
 let level0Reducer = Reducer<Level0State, Level0Action, Level0Environment>.combine(
-  level1Reducer.pullback(state: \.level1,
-                         action: /Level0Action.level1,
-                         environment: \.level1),
+  level1Reducer.pullback(
+    state: \.level1,
+    action: /Level0Action.level1,
+    environment: \.level1),
   Reducer<Level0State, Level0Action, Level0Environment> {
     state, action, environment in
     switch action {
@@ -39,18 +40,18 @@ let level0Reducer = Reducer<Level0State, Level0Action, Level0Environment>.combin
       return .none
     case .onAppear:
       return Effect(value: .isReady)
-        .delay(for: 1, scheduler: environment.background) // Simulate something lengthy…
+        .delay(for: 1, scheduler: environment.background)  // Simulate something lengthy…
         .receive(on: environment.main)
         .eraseToEffect()
 
-      // Alternatively, we can directly tap into the environment's dependepencies using
-      // their global property name, meaning that we can even bypass declarations like
-      // `@Dependency(\.mainQueue) var main` in the environment to write:
-      //
-      //   return Effect(value: .isReady)
-      //     .delay(for: 1, scheduler: environment.backgroundQueue)
-      //     .receive(on: environment.mainQueue)
-      //     .eraseToEffect()
+    // Alternatively, we can directly tap into the environment's dependepencies using
+    // their global property name, meaning that we can even bypass declarations like
+    // `@Dependency(\.mainQueue) var main` in the environment to write:
+    //
+    //   return Effect(value: .isReady)
+    //     .delay(for: 1, scheduler: environment.backgroundQueue)
+    //     .receive(on: environment.mainQueue)
+    //     .eraseToEffect()
     }
   }
 )
@@ -78,30 +79,35 @@ struct Level0View: View {
 
 struct Level0View_Preview: PreviewProvider {
   static var previews: some View {
-    Level0View(store:
-      .init(initialState:
+    Level0View(
+      store:
         .init(
-          level1: .init(
-            first: .init(randomNumber: 6),
-            second: .init(randomNumber: nil)
-          )
-        ),
-        reducer: level0Reducer,
-        environment: Level0Environment() // Swift ≥ 5.4 can use .init()
-          .with(\.mainQueue, .immediate)
-          .with(\.backgroundQueue, .immediate)
-          // We can set the value of `rng` even if Level0Environment doesn't have a `rng` property:
-          .with(\.rng) { 4 })
+          initialState:
+            .init(
+              level1: .init(
+                first: .init(randomNumber: 6),
+                second: .init(randomNumber: nil)
+              )
+            ),
+          reducer: level0Reducer,
+          environment: Level0Environment()  // Swift ≥ 5.4 can use .init()
+            .with(\.mainQueue, .immediate)
+            .with(\.backgroundQueue, .immediate)
+            // We can set the value of `rng` even if Level0Environment doesn't have a `rng` property:
+            .with(\.rng) { 4 })
     )
-    Level0View(store:
-      .init(initialState:
-        .init(level1: .init(
-          first: .init(randomNumber: nil),
-          second: .init(randomNumber: nil)
-        )),
-        reducer: level0Reducer,
-        // An environment default dependencies:
-        environment: .init())
+    Level0View(
+      store:
+        .init(
+          initialState:
+            .init(
+              level1: .init(
+                first: .init(randomNumber: nil),
+                second: .init(randomNumber: nil)
+              )),
+          reducer: level0Reducer,
+          // An environment default dependencies:
+          environment: .init())
     )
   }
 }

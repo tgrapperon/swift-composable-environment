@@ -49,8 +49,11 @@ public struct Dependency<Value> {
   public init(_ keyPath: WritableKeyPath<Dependencies, Value>) {
     self.keyPath = keyPath
   }
-  
-  @available(*, unavailable, message: """
+
+  @available(
+    *, unavailable,
+    message:
+      """
   @Dependency should be used in conjunction with a `WritableKeyPath`. Please implement a setter
   part in the `Dependencies`'s computed property for this dependency.
   """
@@ -58,8 +61,10 @@ public struct Dependency<Value> {
   public init(_ keyPath: KeyPath<Dependencies, Value>) {
     fatalError()
   }
-  
-  @available(*, unavailable, message: "@Dependency should be used in a ComposableEnvironment class.")
+
+  @available(
+    *, unavailable, message: "@Dependency should be used in a ComposableEnvironment class."
+  )
   public var wrappedValue: Value {
     get { fatalError() }
     set { fatalError() }
