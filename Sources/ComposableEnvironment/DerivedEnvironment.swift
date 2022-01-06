@@ -55,8 +55,13 @@ public final class DerivedEnvironment<Environment> where Environment: Composable
   var didSetAliases: Bool = false
 
   /// See ``DerivedEnvironment`` discussion
-  public init(wrappedValue: Environment, aliases: ((AliasBuilder<Environment>)
-                                                   -> AliasBuilder<Environment>)? = nil) {
+  public init(
+    wrappedValue: Environment,
+    aliases: (
+      (AliasBuilder<Environment>)
+        -> AliasBuilder<Environment>
+    )? = nil
+  ) {
     self.environment = wrappedValue
     self.aliasBuilder = aliases.map { $0(.init()) }
   }
