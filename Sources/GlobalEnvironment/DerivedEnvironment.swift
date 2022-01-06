@@ -24,22 +24,7 @@ import ComposableDependencies
 /// ```
 @propertyWrapper
 public final class DerivedEnvironment<Environment> where Environment: GlobalEnvironment {
-  private var _environment: Environment?
-  
-  var environment: Environment {
-    set { _environment = newValue  }
-    get {
-      if let environment = _environment {
-        return environment
-      } else {
-        let environment = Environment()
-        self._environment = environment
-        return environment
-      }
-    }
-  }
-  
-  
+  lazy var environment: Environment = .init()
   var aliasBuilder: AliasBuilder<Environment>?
   var didSetAliases: Bool = false
 

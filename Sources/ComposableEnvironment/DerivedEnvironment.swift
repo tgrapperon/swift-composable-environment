@@ -48,19 +48,7 @@ public final class DerivedEnvironment<Value> where Value: ComposableEnvironment 
     }
   }
 
-  var _environment: Value?
-  var environment: Value {
-    set { _environment = newValue }
-    get {
-      if let environment = _environment {
-        return environment
-      } else {
-        let environment = Value()
-        self._environment = environment
-        return environment
-      }
-    }
-  }
+  lazy var environment: Value = .init()
   
   var aliasBuilder: AliasBuilder<Value>?
   var didSetAliases: Bool = false
