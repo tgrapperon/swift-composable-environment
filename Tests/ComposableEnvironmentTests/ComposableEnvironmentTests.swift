@@ -198,6 +198,31 @@ final class ComposableEnvironmentTests: XCTestCase {
     XCTAssertEqual(parent.with(\.int, 4).c1.int1, 4)
   }
   
+  func testRecursiveEnvironment() {
+    class FirstEnvironment: ComposableEnvironment {
+      @DerivedEnvironment<SecondEnvironment>
+      var second
+      
+      @Dependency(\.int1)
+      var int1
+    }
+    
+    class SecondEnvironment: ComposableEnvironment {
+      @DerivedEnvironment<FirstEnvironment>
+      var first
+      
+      @Dependency(\.int2)
+      var int2
+    }
+    
+    let first = FirstEnvironment()
+    XCTAssertEqual(first.int1, -1)
+    XCTAssertEqual(first.second.first.int1, -1)
+    
+    XCTAssertEqual(first.second.int2, -10)
+    XCTAssertEqual(first.second.first.second.int2, -10)
+  }
+  
 //  func testDependencyAliases() {
 //    var dep = DependencyAliases()
 //    dep.alias(dependency: \Dependencies.int1, to: \Dependencies.int)

@@ -24,7 +24,22 @@ import ComposableDependencies
 /// ```
 @propertyWrapper
 public final class DerivedEnvironment<Environment> where Environment: GlobalEnvironment {
-  var environment: Environment
+  private var _environment: Environment?
+  
+  var environment: Environment {
+    set { _environment = newValue  }
+    get {
+      if let environment = _environment {
+        return environment
+      } else {
+        let environment = Environment()
+        self._environment = environment
+        return environment
+      }
+    }
+  }
+  
+  
   var aliasBuilder: AliasBuilder<Environment>?
   var didSetAliases: Bool = false
 
@@ -37,7 +52,6 @@ public final class DerivedEnvironment<Environment> where Environment: GlobalEnvi
 
   /// See ``DerivedEnvironment`` discussion
   public init(aliases: ((AliasBuilder<Environment>) -> AliasBuilder<Environment>)? = nil) {
-    self.environment = Environment()
     self.aliasBuilder = aliases.map { $0(.init()) }
   }
 
