@@ -87,4 +87,29 @@ final class GlobalEnvironmentTests: XCTestCase {
     XCTAssertEqual(parent.c1.otherInt, 1)
     XCTAssertEqual(parent.with(\.int, 4).c1.otherInt, 4)
   }
+  
+  func testRecursiveEnvironment() {
+    struct FirstEnvironment: GlobalEnvironment {
+      @DerivedEnvironment<SecondEnvironment>
+      var second
+      
+      @Dependency(\.int1)
+      var int1
+    }
+    
+    struct SecondEnvironment: GlobalEnvironment {
+      @DerivedEnvironment<FirstEnvironment>
+      var first
+      
+      @Dependency(\.int2)
+      var int2
+    }
+    
+    let first = FirstEnvironment()
+    XCTAssertEqual(first.int1, -1)
+    XCTAssertEqual(first.second.first.int1, -1)
+    
+    XCTAssertEqual(first.second.int2, -10)
+    XCTAssertEqual(first.second.first.second.int2, -10)
+  }
 }

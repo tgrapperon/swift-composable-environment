@@ -48,7 +48,8 @@ public final class DerivedEnvironment<Value> where Value: ComposableEnvironment 
     }
   }
 
-  var environment: Value
+  lazy var environment: Value = .init()
+  
   var aliasBuilder: AliasBuilder<Value>?
   var didSetAliases: Bool = false
 
@@ -60,7 +61,6 @@ public final class DerivedEnvironment<Value> where Value: ComposableEnvironment 
 
   /// See ``DerivedEnvironment`` discussion
   public init(aliases: ((AliasBuilder<Value>) -> AliasBuilder<Value>)? = nil) {
-    self.environment = Value()
     self.aliasBuilder = aliases.map { $0(.init()) }
   }
 
