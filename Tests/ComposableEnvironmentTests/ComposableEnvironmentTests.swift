@@ -223,28 +223,4 @@ final class ComposableEnvironmentTests: XCTestCase {
     XCTAssertEqual(first.second.int2, -10)
     XCTAssertEqual(first.second.first.second.int2, -10)
   }
-
-  //  func testDependencyAliases() {
-  //    var dep = DependencyAliases()
-  //    dep.alias(dependency: \Dependencies.int1, to: \Dependencies.int)
-  //    dep.alias(dependency: \Dependencies.int2, to: \Dependencies.int1)
-  //    XCTAssertEqual(dep.canonicalAlias(for: \Dependencies.int), \.int)
-  //    XCTAssertEqual(dep.canonicalAlias(for: \Dependencies.int1), \.int)
-  //    XCTAssertEqual(dep.canonicalAlias(for: \Dependencies.int2), \.int)
-  //
-  //
-  //
-  //    dep.aliases.removeAll()
-  //    dep.alias(dependency: \Dependencies.int, to: \Dependencies.int1)
-  //    dep.alias(dependency: \Dependencies.int1, to: \Dependencies.int2)
-  //    XCTAssertEqual(dep.canonicalAlias(for: \Dependencies.int), \.int2)
-  //    XCTAssertEqual(dep.canonicalAlias(for: \Dependencies.int1), \.int2)
-  //    XCTAssertEqual(dep.canonicalAlias(for: \Dependencies.int2), \.int2)
-  //
-  //    XCTAssertEqual(dep.preimage(for: \Dependencies.int), [\.int1, \.int2, \.int])
-  //    XCTAssertEqual(dep.preimage(for: \Dependencies.int1), [\.int1, \.int2, \.int])
-  //    XCTAssertEqual(dep.preimage(for: \Dependencies.int2), [\.int1, \.int2, \.int])
-  //
-  //    XCTAssertEqual(dep.preimage(for: \Dependencies.int).count, 3)
-  //  }
 }
