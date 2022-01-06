@@ -122,7 +122,7 @@ In the case the same dependency was defined by different domains using different
 ```swift
 environment.aliasing(\.main, to: \.mainQueue)
 ```
-Once aliased, you can assign a value using either `KeyPath`. If no value is set for the dependency, the second argument provides its default for both `KeyPaths. If you define multiple
+Once aliased, you can assign a value using either `KeyPath`. If no value is set for the dependency, the second argument provides its default for both `KeyPaths`.
 
 You can also alias dependencies "on the spot", using the `@DerivedEnvironment` property wrapper. Its initializer provides a closure transforming a provided `AliasBuilder`.
 This type has only one chainable method, `alias(dependencyKeyPath, to: referenceDependencyKeyPath)`. For example, if the `main` dependency is defined in the `child` derived environment, you can define an alias to the `mainQueue` dependency from `ParentEnvironment` using:
