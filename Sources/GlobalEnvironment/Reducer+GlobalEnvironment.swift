@@ -50,7 +50,6 @@ extension Reducer where Environment: GlobalEnvironment {
   public func pullback<GlobalState, GlobalAction, GlobalEnvironment>(
     state toLocalState: CasePath<GlobalState, State>,
     action toLocalAction: CasePath<GlobalAction, Action>,
-    breakpointOnNil: Bool = true,
     _ file: StaticString = #file,
     _ line: UInt = #line
   ) -> Reducer<GlobalState, GlobalAction, GlobalEnvironment> {
@@ -58,8 +57,7 @@ extension Reducer where Environment: GlobalEnvironment {
     return pullback(
       state: toLocalState,
       action: toLocalAction,
-      environment: { _ in local },
-      breakpointOnNil: breakpointOnNil
+      environment: { _ in local }
     )
   }
 
@@ -83,7 +81,6 @@ extension Reducer where Environment: GlobalEnvironment {
   public func forEach<GlobalState, GlobalAction, GlobalEnvironment, ID>(
     state toLocalState: WritableKeyPath<GlobalState, IdentifiedArray<ID, State>>,
     action toLocalAction: CasePath<GlobalAction, (ID, Action)>,
-    breakpointOnNil: Bool = true,
     _ file: StaticString = #file,
     _ line: UInt = #line
   ) -> Reducer<GlobalState, GlobalAction, GlobalEnvironment> {
@@ -91,8 +88,7 @@ extension Reducer where Environment: GlobalEnvironment {
     return forEach(
       state: toLocalState,
       action: toLocalAction,
-      environment: { _ in local },
-      breakpointOnNil: breakpointOnNil
+      environment: { _ in local }
     )
   }
 
@@ -115,7 +111,6 @@ extension Reducer where Environment: GlobalEnvironment {
   public func forEach<GlobalState, GlobalAction, GlobalEnvironment, Key>(
     state toLocalState: WritableKeyPath<GlobalState, [Key: State]>,
     action toLocalAction: CasePath<GlobalAction, (Key, Action)>,
-    breakpointOnNil: Bool = true,
     _ file: StaticString = #file,
     _ line: UInt = #line
   ) -> Reducer<GlobalState, GlobalAction, GlobalEnvironment> {
@@ -123,8 +118,7 @@ extension Reducer where Environment: GlobalEnvironment {
     return forEach(
       state: toLocalState,
       action: toLocalAction,
-      environment: { _ in local },
-      breakpointOnNil: breakpointOnNil
+      environment: { _ in local }
     )
   }
 }
