@@ -4,18 +4,18 @@ import XCTest
 
 extension Dependencies {
   fileprivate var int: Int {
-		get { self[\.int] ?? 1 }
-		set { self[\.int] = newValue }
+    get { self[\.int] ?? 1 }
+    set { self[\.int] = newValue }
   }
 
   fileprivate var int1: Int {
-		get { self[\.int1] ?? -1 }
-		set { self[\.int1] = newValue }
+    get { self[\.int1] ?? -1 }
+    set { self[\.int1] = newValue }
   }
 
   fileprivate var int2: Int {
-		get { self[\.int2] ?? -10 }
-		set { self[\.int2] = newValue }
+    get { self[\.int2] ?? -10 }
+    set { self[\.int2] = newValue }
   }
 }
 

@@ -47,13 +47,13 @@ public struct Dependencies {
   fileprivate init() {}
 	
 	public subscript<T>(_ keyPath: WritableKeyPath<Dependencies, T>) -> T? {
-		get { values[keyPath]?.value as? T }
-		set { values[keyPath] = newValue.map { .defined($0) } }
+    get { values[keyPath]?.value as? T }
+    set { values[keyPath] = newValue.map { .defined($0) } }
 	}
 	
 	@available(
-		*, deprecated,
-		 message:
+    *, deprecated,
+     message:
 """
 `DependencyKey` is deprecated, use keypathes instead
 """
