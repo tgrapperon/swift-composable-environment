@@ -1,7 +1,7 @@
 /// This type acts as a namespace to reference your dependencies.
 ///
 /// To declare a dependency,  declare a computed property in this
-/// type. For example, if
+/// type. For example:
 /// ```swift
 /// extension Dependencies {
 ///   var uuidGenerator: () -> UUID {
@@ -46,7 +46,7 @@ public struct Dependencies {
 
   fileprivate init() {}
 	
-	public subscript<T>(_ keyPath: WritableKeyPath<Dependencies, T>) -> T? {
+  public subscript<T>(_ keyPath: WritableKeyPath<Dependencies, T>) -> T? {
     get { values[keyPath]?.value as? T }
     set { values[keyPath] = newValue.map { .defined($0) } }
 	}
