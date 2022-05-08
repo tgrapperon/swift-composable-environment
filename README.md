@@ -16,20 +16,12 @@ Both modules are defined in the same repository to maintain source compatibility
 **The `GlobalEnvironment` module should fit most of the cases.**
 
 ## Defining dependencies
-Each dependency we want to share should be declared with a `DependencyKey`'s in a similar fashion one declares custom `EnvironmentValue`'s in SwiftUI using `EnvironmentKey`'s. Let define a `mainQueue` dependency:
-```swift
-struct MainQueueKey: DependencyKey {
-  static var defaultValue: AnySchedulerOf<DispatchQueue> { .main }
-}
-```
-This key doesn't need to be public. If the dependency is an existential type, it can be even used as a `DependencyKey` itself, without needing to introduce an additional type.
-
-Like we would do with SwiftUI's `EnvironmentValues`, we also install it in `Dependencies`:
+Each dependency we want to share should be declared via subscript with a `KeyPath` for the dependency. Let define a `mainQueue` dependency:
 ```swift
 extension Dependencies {
   var mainQueue: AnySchedulerOf<DispatchQueue> {
-    get { self[MainQueueKey.self] }
-    set { self[MainQueueKey.self] = newValue }
+    get { self[\.mainQueue] ?? .main }
+    set { self[\.mainQueue] = newValue }
   }
 }
 ```
@@ -170,7 +162,7 @@ The principal differences between the two approaches are summarized in the follo
 In order to ease its learning curve, the library bases its API on SwiftUI's Environment. We have the following functional correspondences:
 | SwiftUI | ComposableEnvironment| Usage |
 |---|---|---|
-|`EnvironmentKey`|`DependencyKey`| Identify a shared value |
+|`EnvironmentKey`|`DependencyKey`| Identify a shared value, deprecated |
 |`EnvironmentValues`|`Dependencies`| Expose a shared value |
 |`@Environment`|`@Dependency`| Retrieve a shared value |
 |`View`|`(Composable/Global)Environment`| A node |

@@ -10,8 +10,8 @@ private struct IntKey: DependencyKey {
 
 extension Dependencies {
   fileprivate var int: Int {
-    get { self[IntKey.self] }
-    set { self[IntKey.self] = newValue }
+    get { self[\.int] ?? 1 }
+    set { self[\.int] = newValue }
   }
 }
 
