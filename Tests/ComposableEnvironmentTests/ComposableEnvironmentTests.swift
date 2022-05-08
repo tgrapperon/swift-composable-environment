@@ -2,32 +2,20 @@ import XCTest
 
 @testable import ComposableEnvironment
 
-private struct IntKey: DependencyKey {
-  static var defaultValue: Int { 1 }
-}
-
-private struct Int1Key: DependencyKey {
-  static var defaultValue: Int { -1 }
-}
-
-private struct Int2Key: DependencyKey {
-  static var defaultValue: Int { -10 }
-}
-
 extension Dependencies {
   fileprivate var int: Int {
-    get { self[IntKey.self] }
-    set { self[IntKey.self] = newValue }
+		get { self[\.int] ?? 1 }
+		set { self[\.int] = newValue }
   }
 
   fileprivate var int1: Int {
-    get { self[Int1Key.self] }
-    set { self[Int1Key.self] = newValue }
+		get { self[\.int1] ?? -1 }
+		set { self[\.int1] = newValue }
   }
 
   fileprivate var int2: Int {
-    get { self[Int2Key.self] }
-    set { self[Int2Key.self] = newValue }
+		get { self[\.int2] ?? -10 }
+		set { self[\.int2] = newValue }
   }
 }
 

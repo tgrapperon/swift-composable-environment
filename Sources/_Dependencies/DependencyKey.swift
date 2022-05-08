@@ -3,6 +3,13 @@
 ///
 /// You use this protocol like `EnvironmentKey` are used in SwiftUI. Types conforming to this
 /// protocol can then be used to declare the dependency in the ``Dependencies`` namespace.
+@available(
+	*, deprecated,
+	 message:
+"""
+`DependencyKey` is deprecated, use keypathes instead
+"""
+)
 public protocol DependencyKey {
   associatedtype Value
   /// The default value returned when accessing the corresponding dependency when no value was
