@@ -175,3 +175,7 @@ extension Dependencies {
     ComposableEnvironment.aliases.clear()
   }
 }
+
+/// You can use this typealias if `@DependencyKey` is clashing with other modules offering
+/// a similarly named protocol.
+public typealias ComposableDependencyKey = DependencyKey
