@@ -11,5 +11,5 @@ public protocol DependencyKey {
 }
 
 /// You can use this typealias if `@DependencyKey` is clashing with other modules offering
-/// similarly named protocols
+/// a similarly named protocol.
 public typealias ComposableDependencyKey = DependencyKey

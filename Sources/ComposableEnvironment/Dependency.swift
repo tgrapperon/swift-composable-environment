@@ -72,5 +72,5 @@ public struct Dependency<Value> {
 }
 
 /// You can use this typealias if `@Dependency` is clashing with other modules offering
-/// similarly named property wrappers
+/// a similarly named property wrapper
 public typealias ComposableDependency = Dependency
