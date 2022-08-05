@@ -9,3 +9,7 @@ public protocol DependencyKey {
   /// defined by one of its parents.
   static var defaultValue: Self.Value { get }
 }
+
+/// You can use this typealias if `@DependencyKey` is clashing with other modules offering
+/// similarly named protocols
+public typealias ComposableDependencyKey
