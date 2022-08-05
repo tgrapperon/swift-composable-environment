@@ -12,4 +12,4 @@ public protocol DependencyKey {
 
 /// You can use this typealias if `@DependencyKey` is clashing with other modules offering
 /// similarly named protocols
-public typealias ComposableDependencyKey
+public typealias ComposableDependencyKey = DependencyKey
