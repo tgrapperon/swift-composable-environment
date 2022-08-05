@@ -70,3 +70,7 @@ public struct Dependency<Value> {
     set { fatalError() }
   }
 }
+
+/// You can use this typealias if `@Dependency` is clashing with other modules offering
+/// similarly named property wrappers
+public typealias ComposableDependency = Dependency

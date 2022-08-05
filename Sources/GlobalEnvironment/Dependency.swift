@@ -35,3 +35,7 @@ public struct Dependency<Value> {
     Dependencies.global[keyPath: Dependencies.aliases.standardAlias(for: keyPath)]
   }
 }
+
+/// You can use this typealias if `@Dependency` is clashing with other modules offering
+/// similarly named property wrappers
+public typealias GlobalDependency = Dependency
