@@ -216,4 +216,4 @@ DependencyKey: TCA's DependencyKey
 Compatible.DependencyKey: Composable Environment's DependencyKey
 @Compatible.Dependency: Composable Environment's @Dependency
 ```
-You can then migrate at your rythm to protocol reducers. Once the migration is complete, you can remove the dependency to this library. I hope it served you well!
+You can then migrate at your rhythm to protocol reducers. Once the migration is complete, you can remove the dependency to this library. I hope it served you well!
