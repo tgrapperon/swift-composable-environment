@@ -199,7 +199,7 @@ to your target's dependencies, depending on the module you want to use.
 
 When importing the latest versions of TCA, there will likely be ambiguities when using the `@Dependency` property wrapper, or the `DependencyKey` protocol. As this library will give way to TCA, the preferred approach is the following:
 
-- Define a typealias to both TCA's types in a module you own (or in you're application if you're not using modules):
+- Define a typealias to both TCA's types in a module you own (or in your application if you're not using modules):
 ```swift
 import ComposableArchitecture
 public typealias DependencyKey = ComposableArchitecture.DependencyKey
