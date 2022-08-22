@@ -175,3 +175,18 @@ extension Dependencies {
     ComposableEnvironment.aliases.clear()
   }
 }
+
+extension Compatible {
+  /// You can use this typealias if `DependencyKey` is clashing with other modules offering
+  /// a similarly named protocol.
+  ///
+  /// You should be able to replace:
+  /// ```swift
+  /// struct MainQueueKey: DependencyKey { … }
+  /// ```
+  /// by
+  /// ```swift
+  /// struct MainQueueKey: Compatible.DependencyKey { … }
+  /// ```
+  public typealias DependencyKey = _Dependencies.DependencyKey
+}

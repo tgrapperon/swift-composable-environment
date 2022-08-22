@@ -35,3 +35,21 @@ public struct Dependency<Value> {
     Dependencies.global[keyPath: Dependencies.aliases.standardAlias(for: keyPath)]
   }
 }
+
+/// Convenience typealias in case of name clashes. See ``Compatible.Dependency``.
+public typealias ComposableEnvironmentDependency = Dependency
+
+extension Compatible {
+  /// You can use this typealias if `@Dependency` is clashing with other modules offering
+  /// a similarly named property wrapper.
+  ///
+  /// You should be able to replace
+  /// ```swift
+  /// @Dependency(\.mainQueue) var mainQueue
+  /// ```
+  /// by
+  /// ```swift
+  /// @Compatible.Dependency(\.mainQueue) var mainQueue
+  /// ```
+  public typealias Dependency = ComposableEnvironmentDependency
+}
