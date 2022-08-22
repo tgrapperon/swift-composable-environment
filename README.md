@@ -6,6 +6,8 @@
 
 This library brings an API similar to SwiftUI's `Environment` to derive and compose `Environment`'s in [The Composable Architecture](https://github.com/pointfreeco/swift-composable-architecture) (TCA). 
 
+**TCA is moving toward protocol reducers. This simplifies greatly the way dependencies are passed around between features. It is encouraged to migrate toward this approach. TCA will also use a `@Dependency` property wrapper, and a `DependencyKey` protocol, so [you will need to perform a few actions](#migrating-to-tcas-protocol-reducers) to have both systems working at the same time while you transition out from this library.**
+
 By `Environment`, one understands a type that vends *dependencies*. This library eases this process by standardizing these dependencies, and the way they are passed from one environment type to another when composing domains using TCA. Like in SwiftUI, this library allows passing values (in this case dependencies) down a tree of values (in this case the reducers) without having to specify them at each step. You don't need to provide initial values for dependencies in your `Environment`'s, you don't need to inject dependencies from a parent environment to a child environment, and in many cases, you don't even need to instantiate the child environment.
 
 This library comes with two mutually exclusive modules, `ComposableEnvironment` and `GlobalEnvironment`, which are providing different functionalities for different tradeoffs.
@@ -192,3 +194,26 @@ to your Package dependencies in `Package.swift`, and then
 .product(name: "GlobalEnvironment", package: "swift-composable-environment")
 ```
 to your target's dependencies, depending on the module you want to use.
+
+## Migrating to TCA's protocol reducers
+
+When importing the latest versions of TCA, there will likely be ambiguities when using the `@Dependency` property wrapper, or the `DependencyKey` protocol. As this library will give way to TCA, the preferred approach is the following:
+
+- Define a typealias to both TCA's types in a module you own (or in you're application if you're not using modules):
+```swift
+import ComposableArchitecture
+public typealias DependencyKey = ComposableArchitecture.DependencyKey
+public typealias Dependency = ComposableArchitecture.Dependency
+```
+Because these typeliases are defined in modules you own, they will be preferred to external definitions when resolving types.
+- Replace all occurences of `DependencyKey` by `Compatible.DependencyKey` and `@Dependency` by `@Compatible.Dependency`. You can use Xcode search/replace in all files for this purpose.
+
+In this state, your project should build without ambiguities.
+```swift
+DependencyKey: TCA's DependencyKey
+@Dependency: TCA's @Dependency
+---
+Compatible.DependencyKey: Composable Environment's DependencyKey
+@Compatible.Dependency: Composable Environment's @Dependency
+```
+You can then migrate at your rythm to protocol reducers. Once the migration is complete, you can remove the dependency to this library. I hope it served you well!
