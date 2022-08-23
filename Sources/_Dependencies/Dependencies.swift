@@ -1,13 +1,12 @@
 /// This type acts as a namespace to reference your dependencies.
 ///
-/// To declare a dependency, create a ``DependencyKey``, and declare a computed property in this
-/// type like you would declare a custom `EnvironmentValue` in SwiftUI. For example, if
-/// `UUIDGeneratorKey` is a ``DependencyKey`` with ``DependencyKey/Value`` == `() -> UUID`:
+/// To declare a dependency,  declare a computed property in this
+/// type. For example:
 /// ```swift
 /// extension Dependencies {
 ///   var uuidGenerator: () -> UUID {
-///     get { self[UUIDGeneratorKey.self] }
-///     set { self[UUIDGeneratorKey.self] = newValue }
+///     get { self[\.uuidGenerator] ?? { UUID() } }
+///     set { self[\.uuidGenerator] = newValue }
 ///   }
 /// }
 /// ```
@@ -42,13 +41,26 @@ public struct Dependencies {
     }
   }
 
-  fileprivate var values = [ObjectIdentifier: DependencyValue]()
+  fileprivate var deprecatedValues = [ObjectIdentifier: DependencyValue]()
+	fileprivate var values = [PartialKeyPath<Dependencies>: DependencyValue]()
 
   fileprivate init() {}
-
+	
+  public subscript<T>(_ keyPath: WritableKeyPath<Dependencies, T>) -> T? {
+    get { values[keyPath]?.value as? T }
+    set { values[keyPath] = newValue.map { .defined($0) } }
+	}
+	
+	@available(
+    *, deprecated,
+     message:
+"""
+`DependencyKey` is deprecated, use keypathes instead
+"""
+	)
   public subscript<T>(_ key: T.Type) -> T.Value where T: DependencyKey {
-    get { values[ObjectIdentifier(key)]?.value as? T.Value ?? key.defaultValue }
-    set { values[ObjectIdentifier(key)] = .defined(newValue) }
+    get { deprecatedValues[ObjectIdentifier(key)]?.value as? T.Value ?? key.defaultValue }
+    set { deprecatedValues[ObjectIdentifier(key)] = .defined(newValue) }
   }
 }
 

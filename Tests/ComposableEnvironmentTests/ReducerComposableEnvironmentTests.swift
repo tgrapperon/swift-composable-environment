@@ -4,14 +4,10 @@ import XCTest
 
 @testable import ComposableEnvironment
 
-private struct IntKey: DependencyKey {
-  static var defaultValue: Int { 1 }
-}
-
 extension Dependencies {
   fileprivate var int: Int {
-    get { self[IntKey.self] }
-    set { self[IntKey.self] = newValue }
+    get { self[\.int] }
+    set { self[\.int] = newValue }
   }
 }
 
